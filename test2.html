@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style type="text/css">
+		  html { height: 100% }
+		  body { height: 100%; margin: 0px; padding: 0px }
+		  #map-canvas { height: 70% }
+	</style>
+    <script src="https://maps.googleapis.com/maps/api/js?"></script>
+    <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script>
+    	var map;
+    	var geocoder;
+    	var i=0;
+    	var count;
+		function initialise() {
+			
+			geocoder = new google.maps.Geocoder();
+			var myLatlng = new google.maps.LatLng(43.650244, -79.390752); // Add the coordinates
+			var mapOptions = {
+				zoom: 8, 
+				minZoom: 3, 
+				maxZoom: 17, 
+				zoomControl:true, 
+				zoomControlOptions: {
+	  				style:google.maps.ZoomControlStyle.DEFAULT // Change to SMALL to force just the + and - buttons.
+				},
+				center: myLatlng, // Centre the Map to coordinates
+				mapTypeId: google.maps.MapTypeId.ROADMAP, // type of Map
+				scrollwheel: true, 
+				panControl:false, 
+				mapTypeControl:false, // map or satellite view
+				scaleControl:false, //hide scale
+				streetViewControl:false, // hide street view
+				overviewMapControl:false, // hide overview 
+				rotateControl:false // disable rotate
+		  	}
+			map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions); 
+			
+			
+			moreAddresses();
+			
+		}
+		
+				
+
+		
+		
+		function moreAddresses() {
+			var pathLatLng = new Array();
+			
+			$.getJSON('data1.json', function(data) {
+		        for (var i in data)(function(i) {
+		        	geocoder.geocode( { 'address': data[i].city}, function(results, status) {
+				        if (status == google.maps.GeocoderStatus.OK) {
+				        	
+				            var marker = new google.maps.Marker({
+				                map: map, 
+				                position: results[0].geometry.location,
+				                title: data[i].city
+				            });				            
+				            marker.info = new google.maps.InfoWindow({
+				            	  content: "<h3>"+ data[i].city + "</h3>" + "<p>" + data[i].text +  "</p>"
+				            	});
+				            
+				            google.maps.event.addListener(marker, 'click', function() {
+				            	  marker.info.open(map, this.marker);
+				            	});
+				            
+				            pathLatLng.push( new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng()));
+				            
+				            var lineSymbol = {
+				            	    path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW
+				            	  };
+				            
+				            var pathline = new google.maps.Polyline({
+				        	    path: pathLatLng,
+				        	    geodesic: true,
+				        	    strokeColor: '#FF0000',
+				        	    strokeOpacity: 1.0,
+				        	    strokeWeight: 2,
+				        	    icons: [{
+				        	        icon: lineSymbol,
+				        	        offset: '100%'
+				        	      }]
+				        	  });
+
+					        pathline.setMap(map);
+					        
+				        } else {
+				            alert("Geocode failed: " + status);
+				        }
+				      	});
+		        	
+		        		        	
+		        })(i);
+		        
+
+		  });
+		    
+		    
+		  }
+		
+		
+		google.maps.event.addDomListener(window, 'load', initialise);
+    </script>
+  </head>
+  <body>
+    <div id="map-canvas"></div>
+  </body>
+</html>
