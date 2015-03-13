@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="/home/ammar/workspace/Parser/stanford-ner-3.5.0-javadoc.jar"/>
 	<classpathentry kind="lib" path="/home/ammar/workspace/Parser/stanford-ner-3.5.0-sources.jar"/>
 	<classpathentry kind="lib" path="/home/ammar/workspace/Parser/json-simple-1.1.1.jar"/>
+	<classpathentry kind="lib" path="/usr/share/java/mysql-connector-java-5.1.28.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

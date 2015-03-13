@@ -64,7 +64,7 @@
 				            	});
 				            
 				            google.maps.event.addListener(marker, 'click', function() {
-				            	  marker.info.open(map, this.marker);
+				            	  marker.info.open(map, marker);
 				            	});
 				            
 				            pathLatLng.push( new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng()));

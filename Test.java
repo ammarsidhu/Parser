@@ -1,4 +1,5 @@
 import java.io.FileWriter;
+import java.sql.*;
 import java.io.PrintWriter;
 import java.util.List;
 
@@ -13,6 +14,14 @@ import org.json.simple.JSONObject;
 
 
 public class Test {
+	
+	// JDBC driver name and database URL
+	   static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
+	   static final String DB_URL = "jdbc:mysql://localhost/thesis";
+
+	   //  Database credentials
+	   static final String USER = "root";
+	   static final String PASS = "Sr20de-t";
 
 	/**
 	 * @param args
@@ -24,7 +33,24 @@ public class Test {
 	    FileWriter file = new FileWriter("data1.json");
 
 	    AbstractSequenceClassifier<CoreLabel> classifier = CRFClassifier.getClassifier(serializedClassifier);
+	    
+	    Connection conn = null;
+	    Statement stmt = null;
+	    
+	    try{
+	        // Register JDBC driver
+	        Class.forName("com.mysql.jdbc.Driver");
+	    }catch(Exception e){
+	        //Handle errors for Class.forName
+	        e.printStackTrace();
+	     }
+	    
+	  //STEP 3: Open a connection
+	      conn = DriverManager.getConnection(DB_URL,USER,PASS);
 
+	      //STEP 4: Execute a query
+	      stmt = conn.createStatement();
+	      
 	   
 	    if (args.length > 0) {
 	      String fileContents = IOUtils.slurpFile(args[0]);
@@ -33,7 +59,14 @@ public class Test {
 	      out = classifier.classifyFile(args[0]);
 	      String compound = null;
 	      String wordclass = null;
+	      double latitude = 0;
+	      double longitude = 0;
+	      String sql;
+	      ResultSet rs= null;
+	      boolean foundRows = false; 
+	      
 	      JSONArray list = new JSONArray();
+	      
 	      for (List<CoreLabel> sentence : out) {
 	        for (CoreLabel word : sentence) {
 	        	if (word.get(CoreAnnotations.AnswerAnnotation.class).contentEquals("LOCATION") /*||word.get(CoreAnnotations.AnswerAnnotation.class).contentEquals("PERSON")*/){
@@ -48,13 +81,32 @@ public class Test {
 	        	else{
 	        		if(compound != null){
 			        	System.out.print('<' + wordclass + '>' + compound + "</" + wordclass + ">\n");
-			        	System.out.print("sentence: " + StringUtils.join(sentence, " ") + "\n\n");
+			        	System.out.print("sentence: " + StringUtils.join(sentence, " ") + "\n");
 			        	writer.print('<' + wordclass + '>' + compound + "</" + wordclass + ">\n");
-			        	writer.print("sentence: " + StringUtils.join(sentence, " ") + "\n\n");
+			        	writer.print("sentence: " + StringUtils.join(sentence, " ") + "\n");
 	        			
+			        	sql = "select name,latitude,longitude from thesis.geonames where name = '" + compound + "' limit 5";
+			  	      	rs = stmt.executeQuery(sql);
+			  	      	
+				  	    if(rs.next()){
+				  	    	 String name = rs.getString("name");
+				  	    	foundRows = true;
+				  	    	latitude  = rs.getDouble("latitude");
+				  	        longitude = rs.getDouble("longitude");
+				  	        System.out.print("Latitude: " + latitude + "\nLongitude: " + longitude + "\n\n");
+				  	        writer.print("Latitude: " + latitude + "\nLongitude: " + longitude + "\n\n");
+				  	    }
+				  	    else{
+				  	    	foundRows = false;
+				  	    }
+				  	    
 	        			JSONObject obj = new JSONObject();
 	        			obj.put("city", compound);
 	        			obj.put("text", StringUtils.join(sentence, " "));
+	        			obj.put("geocode", foundRows);
+	        			obj.put("latitude", latitude);
+	        			obj.put("longitude", longitude);
+	        			
 	        			list.add(obj);
 	        			compound = null;
 			  	      	wordclass = null;
@@ -66,6 +118,19 @@ public class Test {
 	      file.write(list.toJSONString());
 	      file.flush();
 	      file.close();
+	      
+	      rs.close();
+	      try{
+	          if(stmt!=null)
+	             stmt.close();
+	       }catch(SQLException se2){
+	       }// nothing we can do
+	       try{
+	          if(conn!=null)
+	             conn.close();
+	       }catch(SQLException se){
+	          se.printStackTrace();
+	       }
 
 	    } else {
 	      String[] example = {"This is a test file, that has names such as Mark and Jon.?",
