@@ -4,7 +4,7 @@
     <style type="text/css">
 		  html { height: 100% }
 		  body { height: 100%; margin: 0px; padding: 0px }
-		  #map-canvas { height: 70% }
+		  #map-canvas { height: 70%; width:  70% }
 	</style>
     <script src="https://maps.googleapis.com/maps/api/js?"></script>
     <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
@@ -15,12 +15,14 @@
     	var count;
     	var pathLatLng = new Array();
     	var markers = [];
+    	var cityToMarkersArray = {};
+    	var textToMarkersArray = {};
 		function initialise() {
 			
 			geocoder = new google.maps.Geocoder();
 			var myLatlng = new google.maps.LatLng(43.650244, -79.390752); // Add the coordinates
 			var mapOptions = {
-				zoom: 8, 
+				zoom: 4, 
 				minZoom: 3, 
 				maxZoom: 17, 
 				zoomControl:true, 
@@ -63,9 +65,12 @@
 					        }
 		        		});
 		        	}
+		        	else{
+		        		position =  new google.maps.LatLng(data[i].latitude, data[i].longitude);   
+			        	addMarker(data[i],position);
+		        	}
 		        	
-				    position =  new google.maps.LatLng(data[i].latitude, data[i].longitude);   
-		        	addMarker(data[i],position);
+				    
 		        		        	
 		        })(i);
 		        
@@ -76,22 +81,52 @@
 		  }
 		
 		function addMarker(data, location){
-			var marker = new google.maps.Marker({
-                map: map, 
-                position: location,
-                title: data.city
-            });				            
-            marker.info = new google.maps.InfoWindow({
-            	  content: "<h3>"+ data.city + "</h3>" + "<p>" + data.text +  "</p>"
-            	});
+			if (data.city in cityToMarkersArray){
+				var index = cityToMarkersArray[data.city];
+				var content = markers[cityToMarkersArray[data.city]].info.getContent(this);
+				content = content + "<p>" + data.text +  "</p>";
+				alert("duplicate: " + content);
+				markers[index] = null;
+				var marker = new google.maps.Marker({
+	                map: map, 
+	                position: location,
+	                title: data.city
+	            });				            
+	            marker.info = new google.maps.InfoWindow({
+	            	  content: content
+	            	});
+	            
+	            google.maps.event.addListener(marker, 'click', function() {
+	            	  marker.info.open(map, marker);
+	            	});
+				markers[index] = marker;
+			}
+			else{
+				var marker = new google.maps.Marker({
+	                map: map, 
+	                position: location,
+	                title: data.city
+	            });				            
+	            marker.info = new google.maps.InfoWindow({
+	            	  content: "<h3>"+ data.city + "</h3>" + "<p>" + data.text +  "</p>"
+	            	});
+	            
+	            google.maps.event.addListener(marker, 'click', function() {
+	            	  marker.info.open(map, marker);
+	            	});
+	            markers.push(marker);
+	            cityToMarkersArray[data.city] = markers.length;
+	        	textToMarkersArray[data.text] = markers.length;
+			}
             
-            google.maps.event.addListener(marker, 'click', function() {
-            	  marker.info.open(map, marker);
-            	});
             
-            markers.push(marker);
+            addLine(location);
             
-            pathLatLng.push(location);
+            
+		}
+		
+		function addLine (position){
+			pathLatLng.push(position);
             
             var lineSymbol = {
             	    path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW

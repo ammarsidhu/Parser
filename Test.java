@@ -80,10 +80,13 @@ public class Test {
 	        	}
 	        	else{
 	        		if(compound != null){
+	        			String sentence1 = StringUtils.join(sentence, " ");
+	        			StringBuilder myName = new StringBuilder(sentence1);
+	        			String sentence2 = myName.deleteCharAt(sentence1.length()-2).toString();
 			        	System.out.print('<' + wordclass + '>' + compound + "</" + wordclass + ">\n");
-			        	System.out.print("sentence: " + StringUtils.join(sentence, " ") + "\n");
+			        	System.out.print("sentence: " + sentence2 + "\n");
 			        	writer.print('<' + wordclass + '>' + compound + "</" + wordclass + ">\n");
-			        	writer.print("sentence: " + StringUtils.join(sentence, " ") + "\n");
+			        	writer.print("sentence: " + sentence2 + "\n");
 	        			
 			        	sql = "select name,latitude,longitude from thesis.geonames where name = '" + compound + "' limit 5";
 			  	      	rs = stmt.executeQuery(sql);
@@ -102,7 +105,7 @@ public class Test {
 				  	    
 	        			JSONObject obj = new JSONObject();
 	        			obj.put("city", compound);
-	        			obj.put("text", StringUtils.join(sentence, " "));
+	        			obj.put("text", sentence2);
 	        			obj.put("geocode", foundRows);
 	        			obj.put("latitude", latitude);
 	        			obj.put("longitude", longitude);
