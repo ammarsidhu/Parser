@@ -55,19 +55,26 @@
 			
 			$.getJSON('data1.json', function(data) {
 		        for (var i in data)(function(i) {
-		        	if (data[i].geocode == false){
-		        		geocoder.geocode( { 'address': data[i].city}, function(results, status) {
-		        			if (status == google.maps.GeocoderStatus.OK) {
-		        				addMarker(data[i], results[0].geometry.location);
-		        				pathLatLng.push( new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng()));
-			        		} else {
-					            alert("Geocode failed: " + status);
-					        }
-		        		});
+                    alert("city: " + data[i].city + "index: " + i);
+		        	if (data[i].city in cityToMarkersArray){
+		        		addExisting(data[i]);
 		        	}
 		        	else{
-		        		position =  new google.maps.LatLng(data[i].latitude, data[i].longitude);   
-			        	addMarker(data[i],position);
+		        		if (data[i].geocode == false){
+			        		geocoder.geocode( { 'address': data[i].city}, function(results, status) {
+			        			if (status == google.maps.GeocoderStatus.OK) {
+			        				addMarker(data[i], results[0].geometry.location);
+			        				pathLatLng.push( new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng()));
+				        		} else {
+						            alert("Geocode failed: " + status);
+						        }
+			        		});
+			        	}
+			        	else{
+			        		position =  new google.maps.LatLng(data[i].latitude, data[i].longitude);   
+				        	addMarker(data[i],position);
+		        		}
+		        	
 		        	}
 		        	
 				    
@@ -81,27 +88,7 @@
 		  }
 		
 		function addMarker(data, location){
-			if (data.city in cityToMarkersArray){
-				var index = cityToMarkersArray[data.city];
-				var content = markers[cityToMarkersArray[data.city]].info.getContent(this);
-				content = content + "<p>" + data.text +  "</p>";
-				alert("duplicate: " + content);
-				markers[index] = null;
-				var marker = new google.maps.Marker({
-	                map: map, 
-	                position: location,
-	                title: data.city
-	            });				            
-	            marker.info = new google.maps.InfoWindow({
-	            	  content: content
-	            	});
-	            
-	            google.maps.event.addListener(marker, 'click', function() {
-	            	  marker.info.open(map, marker);
-	            	});
-				markers[index] = marker;
-			}
-			else{
+				
 				var marker = new google.maps.Marker({
 	                map: map, 
 	                position: location,
@@ -115,14 +102,40 @@
 	            	  marker.info.open(map, marker);
 	            	});
 	            markers.push(marker);
-	            cityToMarkersArray[data.city] = markers.length;
-	        	textToMarkersArray[data.text] = markers.length;
-			}
+	            cityToMarkersArray[data.city] = markers.length - 1;
+	        	textToMarkersArray[data.text] = markers.length - 1;
+	        	
+            
+			addLine(location);
             
             
-            addLine(location);
             
+		}
+		
+		function addExisting(data){
+			
+			var index = cityToMarkersArray[data.city];
+			var content = markers[index].info.getContent(this);
+			var location = markers[index].position;
+			alert("index: " + index + "location: " + location);
+			
+			content = content + "<p>" + data.text +  "</p>";
+			var marker = new google.maps.Marker({
+                map: map, 
+                position: location,
+                title: data.city
+            });				            
+            marker.info = new google.maps.InfoWindow({
+            	  content: content
+            	});
             
+            google.maps.event.addListener(marker, 'click', function() {
+            	  marker.info.open(map, marker);
+            	});
+			markers[index] = marker;
+			textToMarkersArray[data.text] = index;
+			
+			addLine(location);
 		}
 		
 		function addLine (position){
