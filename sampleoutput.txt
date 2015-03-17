@@ -8,15 +8,15 @@ sentence: After he travelled, to Detroit.
 Latitude: 42.33143
 Longitude: -83.04575
 
-<LOCATION>Chicago</LOCATION>
-sentence: He also lived in Chicago.
-Latitude: 41.85003
-Longitude: -87.65005
-
 <LOCATION>Jacksonville Naval Air Station</LOCATION>
 sentence: Finally he got a job at Jacksonville Naval Air Station.
 <LOCATION>Toronto</LOCATION>
 sentence: Then he went back to Toronto.
 Latitude: 43.70011
 Longitude: -79.4163
+
+<LOCATION>Chicago</LOCATION>
+sentence: He also lived in Chicago.
+Latitude: 41.85003
+Longitude: -87.65005
 

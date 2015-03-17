@@ -14,7 +14,6 @@ var idNametoArray = {};
 
 
 function initialise() {
-	//$("#inputtext").load("sample.txt");
     $(".highlight").css({ backgroundColor: "#FFFF88" });
     geocoder = new google.maps.Geocoder();
     
@@ -40,7 +39,7 @@ function initialise() {
     
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
     moreAddresses();
-    document.getElementById("a0").addEventListener("click", testfunction);
+    
 }
 		
 				
@@ -51,32 +50,37 @@ function moreAddresses() {
 
 
 $.getJSON('data1.json', function (data) {
-        for (var i in data)(function(i) {
-        if (data[i].city in cityToMarkersArray){
-            addExisting(data[i]);
-        }
-        else{
-            if (data[i].geocode === false){
-                geocoder.geocode( { 'address': data[i].city}, function(results, status) {
-                    if (status == google.maps.GeocoderStatus.OK) {
-                        addMarker(data[i], results[0].geometry.location);
-                        pathLatLng.push( new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng()));
-                    } else {
-                        alert("Geocode failed: " + status);
-                    }
-                });
+        outsidedata = data;
+        for (var i in data) {
+            
+            if (data[i].city in cityToMarkersArray){
+                
+                addExisting(data[i]);
             }
             else{
-                var position =  new google.maps.LatLng(data[i].latitude, data[i].longitude);   
-                addMarker(data[i],position);
-            }
+                if (data[i].geocode === false){
+                    alert("data " +  data[i].city);
+                    geocoder.geocode( { 'address': data[i].city}, function(results, status) {
+                        if (status == google.maps.GeocoderStatus.OK) {
+                             alert("data " +  data[i].city);
+                            addMarker(data[i], results[0].geometry.location);
+                        } else {
+                            alert("Geocode failed: " + status);
+                        }
+                    });
+                }
+                else{
+                    var position =  new google.maps.LatLng(data[i].latitude, data[i].longitude);   
+                    addMarker(data[i],position);
+                }
 
-        }
-        })(i);
+            }
+        };
     convertToHtml();
     });
 
 }
+
 		
 function addMarker(data, location){
     var marker = new google.maps.Marker({
@@ -102,10 +106,11 @@ function addMarker(data, location){
 }
 		
 function addExisting(data){
-
     var index = cityToMarkersArray[data.city];
     var content = markers[index].info.getContent(this);
-    var location = markers[index].position;
+    var location = markers[index].getPosition();
+    markers[index].setMap(null);
+    markers[index] = null;
 
     content = content + "<p>" + data.text +  "</p>";
     var marker = new google.maps.Marker({
@@ -155,22 +160,20 @@ function convertToHtml(){
     jQuery.get('sample.txt', function(data) {
     var string = data;
     for (var i in textArray){
-        //<a id="myLink" href="#" onclick="MyFunction();">
-        //var stringreplace = '<label id="a' + i + '" style="background-color:yellow">' + textArray[i] + "</label>";
-        var stringreplace = '<a id="a' + i + '" style="background-color:yellow" href="#" onclick="testfunction(this.text);">' + textArray[i] + "</a>";
-        data = data.replace(textArray[i], stringreplace);
-         }
+            var stringreplace = '<a id="a' + i + '" style="background-color:yellow" href="#" onclick="centerOnMarker(this.text);">' + textArray[i] + "</a>";
+            data = data.replace(textArray[i], stringreplace);
+        }
         document.getElementById("inputtext").innerHTML = data;
     });
 }
 
 
 
-function testfunction(text){
+function centerOnMarker(text){
     var index = textToMarkersArray[text];
     var LatLng  = markers[index].getPosition();
     map.setCenter(LatLng);
-    map.setZoom(10);
+    map.setZoom(6);
 }
 		
 		
