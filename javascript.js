@@ -11,6 +11,7 @@ var cityToMarkersArray = {};
 var textToMarkersArray = {};
 var textArray = [];
 var idNametoArray = {};
+var data;
 
 
 function initialise() {
@@ -38,36 +39,54 @@ function initialise() {
     }
     
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+    
+    getdata();
+    //geocode();
     moreAddresses();
     
 }
-		
-				
 
-		
-		
+function getdata(){
+    $.ajaxSetup( { "async": false } );
+    $.getJSON('data1.json', function (data1) {
+        data = data1;
+    });	
+    $.ajaxSetup( { "async": true } );
+}
+
+function geocode(data, index){
+        geocoder.geocode( { 'address': data.city}, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                //alert("data " +  data.city);
+                //alert("lat: " +  results[0].geometry.location.lat() + "lng" +  results[0].geometry.location.lng());
+                addMarker(data, results[0].geometry.location);
+            } else {
+                alert("Geocode failed: " + status);
+            }
+        });
+    
+    
+}
+
+
+	
 function moreAddresses() {
-
-
-$.getJSON('data1.json', function (data) {
-        outsidedata = data;
         for (var i in data) {
-            
             if (data[i].city in cityToMarkersArray){
-                
-                addExisting(data[i]);
+                addExisting(data[i],i);
             }
             else{
                 if (data[i].geocode === false){
-                    alert("data " +  data[i].city);
+                    geocode(data[i],i);
+                    /*//alert("data " +  data[i].city);//////////////////////////////////////////////////
                     geocoder.geocode( { 'address': data[i].city}, function(results, status) {
                         if (status == google.maps.GeocoderStatus.OK) {
-                             alert("data " +  data[i].city);
+                             //alert("data " +  data[i].city);/////////////////////////////////////////
                             addMarker(data[i], results[0].geometry.location);
                         } else {
                             alert("Geocode failed: " + status);
                         }
-                    });
+                    });*/
                 }
                 else{
                     var position =  new google.maps.LatLng(data[i].latitude, data[i].longitude);   
@@ -75,11 +94,10 @@ $.getJSON('data1.json', function (data) {
                 }
 
             }
-        };
+        }
     convertToHtml();
-    });
-
 }
+    
 
 		
 function addMarker(data, location){
