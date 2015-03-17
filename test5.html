@@ -9,13 +9,15 @@
     <script src="https://maps.googleapis.com/maps/api/js?"></script>
     <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
     <script src = "javascript.js"></script>
-    <script src = "jquery.highlight.js"></script>
   </head>
   <body>
     <div id="map-canvas"></div>
      
-    <div id="mytest"><pre>test born</pre></div>
-    <pre id="inputtext"></pre>
-    <script>$("#mytest").highlight("born");</script>
+    <pre id="inputtext" style="width: 700px; height: 10pc; overflow-y: scroll;"></pre>
+    <script>
+    $("#mytest").highlight("jQuery", { element: 'a', className: 'jQueryLink'});
+    $("a.jQueryLink").attr({ href: 'http://jquery.com' });
+    </script>
+    
   </body>
 </html>

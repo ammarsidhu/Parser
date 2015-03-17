@@ -81,8 +81,8 @@ public class Test {
 	        	else{
 	        		if(compound != null){
 	        			String sentence1 = StringUtils.join(sentence, " ");
-	        			StringBuilder myName = new StringBuilder(sentence1);
-	        			String sentence2 = myName.deleteCharAt(sentence1.length()-2).toString();
+	        			//StringBuilder myName = new StringBuilder(sentence1);
+	        			String sentence2 = sentence1.replaceAll("\\s+(?=\\p{Punct})", "");
 			        	System.out.print('<' + wordclass + '>' + compound + "</" + wordclass + ">\n");
 			        	System.out.print("sentence: " + sentence2 + "\n");
 			        	writer.print('<' + wordclass + '>' + compound + "</" + wordclass + ">\n");

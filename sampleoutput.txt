@@ -1,10 +1,10 @@
 <LOCATION>Toronto</LOCATION>
-sentence: He was born in Toronto.
+sentence: He was born in Toronto, and left after.
 Latitude: 43.70011
 Longitude: -79.4163
 
 <LOCATION>Detroit</LOCATION>
-sentence: After he travelled to Detroit.
+sentence: After he travelled, to Detroit.
 Latitude: 42.33143
 Longitude: -83.04575
 

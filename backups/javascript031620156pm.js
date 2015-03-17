@@ -9,15 +9,12 @@ var pathLatLng = [];
 var markers = [];
 var cityToMarkersArray = {};
 var textToMarkersArray = {};
-var textArray = [];
-var idNametoArray = {};
 
 
 function initialise() {
-	//$("#inputtext").load("sample.txt");
+	$("#inputtext").load("sample.txt");
     $(".highlight").css({ backgroundColor: "#FFFF88" });
     geocoder = new google.maps.Geocoder();
-    
     var myLatlng = new google.maps.LatLng(43.650244, -79.390752); // Add the coordinates
     var mapOptions = {
         zoom: 4,
@@ -40,7 +37,7 @@ function initialise() {
     
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
     moreAddresses();
-    document.getElementById("a0").addEventListener("click", testfunction);
+
 }
 		
 				
@@ -73,20 +70,19 @@ $.getJSON('data1.json', function (data) {
 
         }
         })(i);
-    convertToHtml();
     });
 
 }
 		
 function addMarker(data, location){
+
     var marker = new google.maps.Marker({
         map: map, 
         position: location,
         title: data.city
-    });	
-    var string = '<a href="#a' + markers.length + '">' + data.text +  "</a>";
+    });				            
     marker.info = new google.maps.InfoWindow({
-          content: "<h3>"+ data.city + "</h3>" + string
+          content: "<h3>"+ data.city + "</h3>" + "<p>" + data.text +  "</p>"
         });
 
     google.maps.event.addListener(marker, 'click', function() {
@@ -95,8 +91,6 @@ function addMarker(data, location){
     markers.push(marker);
     cityToMarkersArray[data.city] = markers.length - 1;
     textToMarkersArray[data.text] = markers.length - 1;
-    textArray.push(data.text);
-    idNametoArray["a" + (markers.length - 1) ] = markers.length - 1;
     addLine(location);
 
 }
@@ -124,8 +118,7 @@ function addExisting(data){
     
     markers[index] = marker;
     textToMarkersArray[data.text] = index;
-    textArray.push(data.text);
-    
+
     addLine(location);
 }
 		
@@ -149,28 +142,6 @@ function addLine (position){
     });
 
     pathline.setMap(map);
-}
-
-function convertToHtml(){
-    jQuery.get('sample.txt', function(data) {
-    var string = data;
-    for (var i in textArray){
-        //<a id="myLink" href="#" onclick="MyFunction();">
-        //var stringreplace = '<label id="a' + i + '" style="background-color:yellow">' + textArray[i] + "</label>";
-        var stringreplace = '<a id="a' + i + '" style="background-color:yellow" href="#" onclick="testfunction(this.text);">' + textArray[i] + "</a>";
-        data = data.replace(textArray[i], stringreplace);
-         }
-        document.getElementById("inputtext").innerHTML = data;
-    });
-}
-
-
-
-function testfunction(text){
-    var index = textToMarkersArray[text];
-    var LatLng  = markers[index].getPosition();
-    map.setCenter(LatLng);
-    map.setZoom(10);
 }
 		
 		
