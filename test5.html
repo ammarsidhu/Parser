@@ -2,9 +2,19 @@
 <html>
   <head>
     <style type="text/css">
-		  html { height: 100% }
-		  body { height: 100%; margin: 0px; padding: 0px }
-		  #map-canvas { height: 100%; width:  70% }
+        html { height: 100% }
+        body { height: 100%; margin: 0px; padding: 0px }
+        #map-canvas { height: 100%; width:  70% }
+        #panel {
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            margin-left: -180px;
+            z-index: 5;
+            background-color: #fff;
+            padding: 5px;
+            border: 1px solid #999;
+        }
 	</style>
     <script src="https://maps.googleapis.com/maps/api/js?"></script>
     <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
@@ -12,12 +22,14 @@
   </head>
   <body>
     <div id="map-canvas" style= float:left;></div>
+    <div id="panel">
+      <input onclick="javascript:removeline();" type=button value="Remove line">
+      <input onclick="javascript:showline();" type=button value="Restore line">
+        <input onclick="javascript:showsubsetoflines(0);" type=button value="Show Subset">
+    </div>
      
     <div  > <pre id="inputtext" style=width: 300px; height: 10pc; overflow:auto float:left;></pre></div>
-    <script>
-    $("#mytest").highlight("jQuery", { element: 'a', className: 'jQueryLink'});
-    $("a.jQueryLink").attr({ href: 'http://jquery.com' });
-    </script>
+    
     
   </body>
 </html>

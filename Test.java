@@ -84,11 +84,15 @@ public class Test {
 			        	System.out.print('<' + wordclass + '>' + compound + "</" + wordclass + ">\n");
 			        	System.out.print("sentence: " + sentence2 + "\n");
 	        			
-			        	sql = "select name,latitude,longitude from thesis.geonames where name = '" + compound + "' limit 5";
+			        	sql = "select name,asciiname,latitude,longitude from thesis.geonames where name = '" + compound + "' or asciiname = '" + compound + "' limit 5";
 			  	      	rs = stmt.executeQuery(sql);
 			  	      	
 				  	    if(rs.next()){
-				  	    	 String name = rs.getString("name");
+				  	    	String name;
+				  	    	if (!rs.getString("name").isEmpty())
+				  	    		name = rs.getString("name");
+				  	    	else
+				  	    		name = rs.getString("asciiname");
 				  	    	foundRows = true;
 				  	    	latitude  = rs.getDouble("latitude");
 				  	        longitude = rs.getDouble("longitude");

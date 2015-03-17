@@ -5,16 +5,13 @@ var map;
 var geocoder;
 var i = 0;
 var count;
-var pathlineArray = [];
+var pathLatLng = [];
 var markers = [];
 var cityToMarkersArray = {};
 var textToMarkersArray = {};
 var textArray = [];
 var idNametoArray = {};
 var data;
-var lastposition;
-var subsetflag = false;
-var clickindex=0;
 
 
 function initialise() {
@@ -44,9 +41,7 @@ function initialise() {
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
     
     getdata();
-    
-    testgeo();
-    
+    //geocode();
     moreAddresses();
     
 }
@@ -59,25 +54,12 @@ function getdata(){
     $.ajaxSetup( { "async": true } );
 }
 
-function testgeo(){
-    //alert("testgeo: " + data[1].latitude);
-    for (var i in data) {
-        if (data[i].geocode === false){
-            geocode(i);
-        }
-    }
-}
-
-function geocode(index){
-        geocoder.geocode( { 'address': data[index].city}, function(results, status) {
+function geocode(data, index){
+        geocoder.geocode( { 'address': data.city}, function(results, status) {
             if (status == google.maps.GeocoderStatus.OK) {
                 //alert("data " +  data.city);
                 //alert("lat: " +  results[0].geometry.location.lat() + "lng" +  results[0].geometry.location.lng());
-                data[index].latitude = results[0].geometry.location.lat();
-                data[index].longitude = results[0].geometry.location.lng();
-                data[index].geocode = true;
-                //addMarker(data, results[0].geometry.location);
-                alert("geocode: " + data[1].latitude);
+                addMarker(data, results[0].geometry.location);
             } else {
                 alert("Geocode failed: " + status);
             }
@@ -87,18 +69,24 @@ function geocode(index){
 }
 
 
-
-
 	
 function moreAddresses() {
-    //alert("moreaddr: " + data[1].latitude);
         for (var i in data) {
             if (data[i].city in cityToMarkersArray){
                 addExisting(data[i],i);
             }
             else{
                 if (data[i].geocode === false){
-                    geocode(i);
+                    geocode(data[i],i);
+                    /*//alert("data " +  data[i].city);//////////////////////////////////////////////////
+                    geocoder.geocode( { 'address': data[i].city}, function(results, status) {
+                        if (status == google.maps.GeocoderStatus.OK) {
+                             //alert("data " +  data[i].city);/////////////////////////////////////////
+                            addMarker(data[i], results[0].geometry.location);
+                        } else {
+                            alert("Geocode failed: " + status);
+                        }
+                    });*/
                 }
                 else{
                     var position =  new google.maps.LatLng(data[i].latitude, data[i].longitude);   
@@ -108,7 +96,6 @@ function moreAddresses() {
             }
         }
     convertToHtml();
-    
 }
     
 
@@ -125,14 +112,7 @@ function addMarker(data, location){
         });
 
     google.maps.event.addListener(marker, 'click', function() {
-            for(i in markers){
-                markers[i].info.close();
-            }
-            marker.info.open(map, marker);
-            if (subsetflag == true)
-            {
-                showsubsetoflines(cityToMarkersArray[marker.title]);
-            }
+          marker.info.open(map, marker);
         });
     markers.push(marker);
     cityToMarkersArray[data.city] = markers.length - 1;
@@ -149,9 +129,8 @@ function addExisting(data){
     var location = markers[index].getPosition();
     markers[index].setMap(null);
     markers[index] = null;
-    var string = '<a href="#a' + textArray.length + '">' + data.text +  "</a>";
 
-    content = content + "<p>" + string +  "</p>";
+    content = content + "<p>" + data.text +  "</p>";
     var marker = new google.maps.Marker({
         map: map, 
         position: location,
@@ -163,31 +142,17 @@ function addExisting(data){
     });
 
     google.maps.event.addListener(marker, 'click', function() {
-            for(i in markers){
-                markers[i].info.close();
-            }
-            marker.info.open(map, marker);
-            if (subsetflag == true)
-            {
-                showsubsetoflines(cityToMarkersArray[marker.title]);
-            }
-        
+          marker.info.open(map, marker);
     });
     
     markers[index] = marker;
     textToMarkersArray[data.text] = index;
     textArray.push(data.text);
-    idNametoArray["a" + (markers.length - 1) ] = index;
     
     addLine(location);
 }
 		
 function addLine (position){
-    var pathLatLng = [];
-    if (markers.length == 1){
-        lastposition = position;
-    }
-    pathLatLng.push(lastposition);
     pathLatLng.push(position);
 
     var lineSymbol = {
@@ -206,11 +171,7 @@ function addLine (position){
         }]
     });
 
-    
-    pathlineArray.push(pathline);
-    //pathline.setMap(map);
-    lastposition = position;
-    showline();
+    pathline.setMap(map);
 }
 
 function convertToHtml(){
@@ -231,34 +192,6 @@ function centerOnMarker(text){
     var LatLng  = markers[index].getPosition();
     map.setCenter(LatLng);
     map.setZoom(6);
-    if (subsetflag == true)
-    {
-        showsubsetoflines(index);
-    }
-}
-
-function removeline(){
-    for(i in pathlineArray){
-        pathlineArray[i].setMap(null);
-    }
-}
-
-function showline(){
-    subsetflag = false;
-    for(i in pathlineArray){
-        pathlineArray[i].setMap(map);
-    }
-}
-
-function showsubsetoflines(index){
-    subsetflag = true;
-    removeline();
-    for(i = index - 1; i < index + 3; i++){
-        if(i<0){
-            i=0;
-        }
-        pathlineArray[i].setMap(map);     
-    }
 }
 		
 		
