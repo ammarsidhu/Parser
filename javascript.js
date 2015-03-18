@@ -125,6 +125,7 @@ function addMarker(data, location){
         });
 
     google.maps.event.addListener(marker, 'click', function() {
+            clickindex = cityToMarkersArray[data.city];
             for(i in markers){
                 markers[i].info.close();
             }
@@ -163,6 +164,7 @@ function addExisting(data){
     });
 
     google.maps.event.addListener(marker, 'click', function() {
+            clickindex = index;
             for(i in markers){
                 markers[i].info.close();
             }
@@ -231,6 +233,7 @@ function centerOnMarker(text){
     var LatLng  = markers[index].getPosition();
     map.setCenter(LatLng);
     map.setZoom(6);
+    clickindex = index;
     if (subsetflag == true)
     {
         showsubsetoflines(index);
