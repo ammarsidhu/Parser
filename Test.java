@@ -84,8 +84,9 @@ public class Test {
 			        	System.out.print('<' + wordclass + '>' + compound + "</" + wordclass + ">\n");
 			        	System.out.print("sentence: " + sentence2 + "\n");
 	        			
-			        	sql = "select name,asciiname,latitude,longitude from thesis.geonames where name = '" + compound + "' or asciiname = '" + compound + "' limit 5";
-			  	      	rs = stmt.executeQuery(sql);
+			        	sql = "select name,asciiname,latitude,longitude from thesis.geonames where name = '" + compound + "' or asciiname = '" + compound + "' limit 1";
+			  	      	//order by population desc limit 1; //for highest population
+			        	rs = stmt.executeQuery(sql);
 			  	      	
 				  	    if(rs.next()){
 				  	    	String name;

@@ -3,22 +3,19 @@
 /*global window */
 var map;
 var geocoder;
-var i = 0;
-var count;
 var pathlineArray = [];
 var markers = [];
-var cityToMarkersArray = {};
-var textToMarkersArray = {};
 var textArray = [];
-var idNametoArray = {};
-var data;
-var lastposition;
-var subsetflag = false;
-var clickindex=0;
+var cityToMarkersArray = {};    //convert city name to marker array index
+var textToMarkersArray = {};    //convert text name to marker array index
+var idNametoArray = {};         //convert html anchor to marker array index
+var data;                       //hold json data
+var lastposition;               //last position for lines
+var subsetflag = false;         //flag for subset of lines
+var clickindex=0;               //last icon clicked
 
 
 function initialise() {
-    $(".highlight").css({ backgroundColor: "#FFFF88" });
     geocoder = new google.maps.Geocoder();
     
     var myLatlng = new google.maps.LatLng(43.650244, -79.390752); // Add the coordinates
@@ -69,21 +66,17 @@ function testgeo(){
 }
 
 function geocode(index){
-        geocoder.geocode( { 'address': data[index].city}, function(results, status) {
-            if (status == google.maps.GeocoderStatus.OK) {
-                //alert("data " +  data.city);
-                //alert("lat: " +  results[0].geometry.location.lat() + "lng" +  results[0].geometry.location.lng());
-                data[index].latitude = results[0].geometry.location.lat();
-                data[index].longitude = results[0].geometry.location.lng();
-                data[index].geocode = true;
-                //addMarker(data, results[0].geometry.location);
-                alert("geocode: " + data[1].latitude);
-            } else {
-                alert("Geocode failed: " + status);
-            }
-        });
-    
-    
+    geocoder.geocode( { 'address': data[index].city}, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+            data[index].latitude = results[0].geometry.location.lat();
+            data[index].longitude = results[0].geometry.location.lng();
+            data[index].geocode = true;
+            //addMarker(data, results[0].geometry.location);
+            alert("geocode: " + data[1].latitude);
+        } else {
+            alert("Geocode failed: " + status);
+        }
+    });
 }
 
 
@@ -119,12 +112,15 @@ function addMarker(data, location){
         position: location,
         title: data.city
     });	
+    marker.setIcon('http://maps.google.com/mapfiles/marker.png');
     var string = '<a href="#a' + markers.length + '">' + data.text +  "</a>";
     marker.info = new google.maps.InfoWindow({
           content: "<h3>"+ data.city + "</h3>" + string
         });
 
     google.maps.event.addListener(marker, 'click', function() {
+            marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+            markers[clickindex].setIcon('http://maps.google.com/mapfiles/marker.png');
             clickindex = cityToMarkersArray[data.city];
             for(i in markers){
                 markers[i].info.close();
@@ -210,7 +206,6 @@ function addLine (position){
 
     
     pathlineArray.push(pathline);
-    //pathline.setMap(map);
     lastposition = position;
     showline();
 }
@@ -229,7 +224,14 @@ function convertToHtml(){
 
 
 function centerOnMarker(text){
+    
     var index = textToMarkersArray[text];
+    markers[index].setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+    markers[clickindex].setIcon('http://maps.google.com/mapfiles/marker.png');
+    for(i in markers){
+                markers[i].info.close();
+    }
+    markers[index].info.open(map, markers[index]);;
     var LatLng  = markers[index].getPosition();
     map.setCenter(LatLng);
     map.setZoom(6);
