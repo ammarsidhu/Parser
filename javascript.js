@@ -63,15 +63,6 @@ function testgeo(){
     var stack = [];
     for (var i in data) {
         if (data[i].geocode === false){
-            /*(geocode(i,data[i])).then(function(results){
-                      data[results[2]].latitude = results[0];
-                        data[results[2]].longitude = results[1];
-                        data[results[2]].geocode = true;
-                        //var position =  new google.maps.LatLng(results[0], results[1]);  
-                        //addMarker(data[results[2]], position);
-                    }, function() {
-                      console.log("the deferred got rejected");
-                    });*/
             stack.push(geocode(i,data[i]));
         }
     }
@@ -84,23 +75,10 @@ function testgeo(){
 
 
 function geocode(index, data1){
-    //deferred = new $.Deferred();
-    //alert("geocode outside: " + data1.city + " text " + data1.text);
     geocoder = new google.maps.Geocoder();
     return $.Deferred(function(deferred) {
         geocoder.geocode( { 'address': data1.city}, function(results, status) {
             if (status == google.maps.GeocoderStatus.OK) {
-                /*
-                data[index].latitude = results[0].geometry.location.lat();
-                data[index].longitude = results[0].geometry.location.lng();
-                data[index].geocode = true;
-                addMarker(data, results[0].geometry.location);
-                */
-                //alert("geocode inside: " + data.city + " text " + data.text);
-                //callback(results);
-                
-                //var r = [results[0].geometry.location.lat(), results[0].geometry.location.lng(), index];
-                //deferred.resolve(r);
 
                 data[index].latitude = results[0].geometry.location.lat();
                 data[index].longitude = results[0].geometry.location.lng();
@@ -112,7 +90,6 @@ function geocode(index, data1){
             }
         });
     });
-    //return deferred.promise();
 }
 
 /* function geocode(index, data, callback){
@@ -150,23 +127,6 @@ function moreAddresses() {
             else{
                 if (data[i].geocode === false){
                     ioutside = i;
-                    //alert("moreadd out: " + data[i].city + " text" + data[i].text);
-                    /*geocode(i, data[i],function(results){
-                        alert("moreadd in: " + data[ioutside].city + " text" + data[ioutside].text);
-                        data[ioutside].latitude = results[0].geometry.location.lat();
-                        data[ioutside].longitude = results[0].geometry.location.lng();
-                        data[ioutside].geocode = true;
-                        addMarker(data[ioutside], results[0].geometry.location);
-                    });*/
-                    /*(geocode(i,data[i])).then(function(results){
-                      data[results[2]].latitude = results[0];
-                        data[results[2]].longitude = results[1];
-                        data[results[2]].geocode = true;
-                        var position =  new google.maps.LatLng(results[0], results[1]);  
-                        addMarker(data[results[2]], position);
-                    }, function() {
-                      console.log("the deferred got rejected");
-                    });*/
                 }
                 else{
                     var position =  new google.maps.LatLng(data[i].latitude, data[i].longitude);   
