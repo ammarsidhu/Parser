@@ -13,12 +13,10 @@ var data;                       //hold json data
 var lastposition;               //last position for lines
 var subsetflag = false;         //flag for subset of lines
 var clickindex=0;               //last icon clicked
-var ioutside;
-var nogeoarray = [];
 
 
 function initialise() {
-    
+    geocoder = new google.maps.Geocoder();
     
     var myLatlng = new google.maps.LatLng(43.650244, -79.390752); // Add the coordinates
     var mapOptions = {
@@ -38,7 +36,7 @@ function initialise() {
         streetViewControl: false, // hide street view
         overviewMapControl: false, // hide overview 
         rotateControl: false // disable rotate
-    };
+    }
     
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
     
@@ -46,7 +44,7 @@ function initialise() {
     
     testgeo();
     
-    //moreAddresses();
+    moreAddresses();
     
 }
 
@@ -60,113 +58,40 @@ function getdata(){
 
 function testgeo(){
     //alert("testgeo: " + data[1].latitude);
-    var stack = [];
     for (var i in data) {
         if (data[i].geocode === false){
-            /*(geocode(i,data[i])).then(function(results){
-                      data[results[2]].latitude = results[0];
-                        data[results[2]].longitude = results[1];
-                        data[results[2]].geocode = true;
-                        //var position =  new google.maps.LatLng(results[0], results[1]);  
-                        //addMarker(data[results[2]], position);
-                    }, function() {
-                      console.log("the deferred got rejected");
-                    });*/
-            stack.push(geocode(i,data[i]));
+            geocode(i);
         }
     }
-    
-    $.when.apply($, stack).done(function() {
-        moreAddresses();
-    });
 }
 
-
-
-function geocode(index, data1){
-    //deferred = new $.Deferred();
-    //alert("geocode outside: " + data1.city + " text " + data1.text);
-    geocoder = new google.maps.Geocoder();
-    return $.Deferred(function(deferred) {
-        geocoder.geocode( { 'address': data1.city}, function(results, status) {
-            if (status == google.maps.GeocoderStatus.OK) {
-                /*
-                data[index].latitude = results[0].geometry.location.lat();
-                data[index].longitude = results[0].geometry.location.lng();
-                data[index].geocode = true;
-                addMarker(data, results[0].geometry.location);
-                */
-                //alert("geocode inside: " + data.city + " text " + data.text);
-                //callback(results);
-                
-                //var r = [results[0].geometry.location.lat(), results[0].geometry.location.lng(), index];
-                //deferred.resolve(r);
-
-                data[index].latitude = results[0].geometry.location.lat();
-                data[index].longitude = results[0].geometry.location.lng();
-                data[index].geocode = true;
-                deferred.resolve();
-
-            } else {
-                alert("Geocode failed: " + status);
-            }
-        });
-    });
-    //return deferred.promise();
-}
-
-/* function geocode(index, data, callback){
-    deferred = new $.Deferred();
-    //alert("geocode outside: " + data.city + " text " + data.text);
-    geocoder.geocode( { 'address': data.city}, function(results, status) {
+function geocode(index){
+    geocoder.geocode( { 'address': data[index].city}, function(results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
-            /*
             data[index].latitude = results[0].geometry.location.lat();
             data[index].longitude = results[0].geometry.location.lng();
             data[index].geocode = true;
-            addMarker(data, results[0].geometry.location);
-            */
-            //alert("geocode inside: " + data.city + " text " + data.text);
-            //callback(results);
-/*
-            deferred.resolve(results);
+            //addMarker(data, results[0].geometry.location);
+            alert("geocode: " + data[1].latitude);
         } else {
             alert("Geocode failed: " + status);
         }
     });
-    return deferred.promise();
-}*/
-
+}
 
 
 
 
 	
 function moreAddresses() {
+    //alert("moreaddr: " + data[1].latitude);
         for (var i in data) {
             if (data[i].city in cityToMarkersArray){
                 addExisting(data[i],i);
             }
             else{
                 if (data[i].geocode === false){
-                    ioutside = i;
-                    //alert("moreadd out: " + data[i].city + " text" + data[i].text);
-                    /*geocode(i, data[i],function(results){
-                        alert("moreadd in: " + data[ioutside].city + " text" + data[ioutside].text);
-                        data[ioutside].latitude = results[0].geometry.location.lat();
-                        data[ioutside].longitude = results[0].geometry.location.lng();
-                        data[ioutside].geocode = true;
-                        addMarker(data[ioutside], results[0].geometry.location);
-                    });*/
-                    /*(geocode(i,data[i])).then(function(results){
-                      data[results[2]].latitude = results[0];
-                        data[results[2]].longitude = results[1];
-                        data[results[2]].geocode = true;
-                        var position =  new google.maps.LatLng(results[0], results[1]);  
-                        addMarker(data[results[2]], position);
-                    }, function() {
-                      console.log("the deferred got rejected");
-                    });*/
+                    geocode(i);
                 }
                 else{
                     var position =  new google.maps.LatLng(data[i].latitude, data[i].longitude);   
@@ -306,7 +231,7 @@ function centerOnMarker(text){
     for(i in markers){
                 markers[i].info.close();
     }
-    markers[index].info.open(map, markers[index]);
+    markers[index].info.open(map, markers[index]);;
     var LatLng  = markers[index].getPosition();
     map.setCenter(LatLng);
     map.setZoom(6);
