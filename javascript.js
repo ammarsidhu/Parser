@@ -44,8 +44,8 @@ function initialise() {
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
     
     getdata();
-    test1();
-    //testgeo();
+    //test1();
+    testgeo();
     
     
 }
@@ -58,13 +58,13 @@ function getdata(){
     $.ajaxSetup( { "async": true } );
 }
 
-/*function test1(index, data1){
+function test1(index, data1){
     geocoder = new google.maps.Geocoder();
     return $.Deferred(function(deferred) {
         var url_addr = encodeURIComponent(data1.city);
-        $.getJSON('geocode.php?addr='+url_addr, function(data) { 
-            var results = data.results,
-            status = data.status;
+        $.getJSON('geocode.php?addr='+url_addr, function(reqdata) { 
+            var results = reqdata.results,
+            status = reqdata.status;
             if (status == google.maps.GeocoderStatus.OK) {
                 alert(results[0].geometry.location.lat);
                 data[index].latitude = results[0].geometry.location.lat;
@@ -80,19 +80,7 @@ function getdata(){
             }
         })
     });
-}*/
-
-function test1(index, data1){
-    geocoder = new google.maps.Geocoder();
-   	alert(data[index].city);
-        var url_addr = encodeURIComponent('toronto');
-	$.getJSON('geocode.php?addr='+url_addr, function(data) { 
-        var results = data.results,
-        status = data.status;
-        alert(results[0].geometry.location.lat);
-	});
 }
-
 
 function testgeo(){
     var deferstack = [];
