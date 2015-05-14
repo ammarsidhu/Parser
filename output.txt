@@ -1,0 +1,347 @@
+<LOCATION>Northern States</LOCATION>
+
+sentence: Since my return to liberty, I have not failed to perceive the increasing interest throughout the Northern States, in regard to the subject of Slavery.
+
+ID# : 0
+
+
+<LOCATION>Rhode Island</LOCATION>
+
+sentence: As far back as I have been able to ascertain, my ancestors on the paternal side were slaves in Rhode Island.
+
+ID# : 1
+
+
+<LOCATION>Hoosic</LOCATION>
+
+sentence: They belonged to a family by the name of Northup, one of whom, removing to the State of New-York, settled at Hoosic, in Rensselaer county.
+
+ID# : 2
+
+
+<LOCATION>Rensselaer county</LOCATION>
+
+sentence: They belonged to a family by the name of Northup, one of whom, removing to the State of New-York, settled at Hoosic, in Rensselaer county.
+
+ID# : 3
+
+
+<LOCATION>Esq.</LOCATION>
+
+sentence: Henry B. Northup, Esq., of Sandy Hill, a distinguished counselor at law, and the man to whom, under Providence, I am indebted for my present liberty, and my return to the society of my wife and children, is a relative of the family in which my forefathers were thus held to service, and from which they took the name I bear.
+
+ID# : 4
+
+
+<LOCATION>Minerva</LOCATION>
+
+sentence: Sometime after my father's liberation, he removed to the town of Minerva, Essex county, N. Y., where I was born, in the month of July, 1808.
+
+ID# : 5
+
+
+<LOCATION>Essex county</LOCATION>
+
+sentence: Sometime after my father's liberation, he removed to the town of Minerva, Essex county, N. Y., where I was born, in the month of July, 1808.
+
+ID# : 6
+
+
+<LOCATION>Granville</LOCATION>
+
+sentence: From thence he removed to Granville, Washington county, near a place known as Slyborough, where, for some years, he labored on the farm of Clark Northup, also a relative of his old master; from thence he removed to the Alden farm, at Moss Street, a short distance north of the village of Sandy Hill; and from thence to the farm now owned by Russel Pratt, situated on the road leading from Fort Edward to Argyle, where he continued to reside until his death, which took place on the 22d day of November, 1829.
+
+ID# : 7
+
+
+Latitude: -33.83333
+Longitude: 151.01667
+
+
+<LOCATION>Washington county</LOCATION>
+
+sentence: From thence he removed to Granville, Washington county, near a place known as Slyborough, where, for some years, he labored on the farm of Clark Northup, also a relative of his old master; from thence he removed to the Alden farm, at Moss Street, a short distance north of the village of Sandy Hill; and from thence to the farm now owned by Russel Pratt, situated on the road leading from Fort Edward to Argyle, where he continued to reside until his death, which took place on the 22d day of November, 1829.
+
+ID# : 8
+
+
+<LOCATION>Moss Street</LOCATION>
+
+sentence: From thence he removed to Granville, Washington county, near a place known as Slyborough, where, for some years, he labored on the farm of Clark Northup, also a relative of his old master; from thence he removed to the Alden farm, at Moss Street, a short distance north of the village of Sandy Hill; and from thence to the farm now owned by Russel Pratt, situated on the road leading from Fort Edward to Argyle, where he continued to reside until his death, which took place on the 22d day of November, 1829.
+
+ID# : 9
+
+
+<LOCATION>Sandy Hill</LOCATION>
+
+sentence: From thence he removed to Granville, Washington county, near a place known as Slyborough, where, for some years, he labored on the farm of Clark Northup, also a relative of his old master; from thence he removed to the Alden farm, at Moss Street, a short distance north of the village of Sandy Hill; and from thence to the farm now owned by Russel Pratt, situated on the road leading from Fort Edward to Argyle, where he continued to reside until his death, which took place on the 22d day of November, 1829.
+
+ID# : 10
+
+
+<LOCATION>Fort Edward</LOCATION>
+
+sentence: From thence he removed to Granville, Washington county, near a place known as Slyborough, where, for some years, he labored on the farm of Clark Northup, also a relative of his old master; from thence he removed to the Alden farm, at Moss Street, a short distance north of the village of Sandy Hill; and from thence to the farm now owned by Russel Pratt, situated on the road leading from Fort Edward to Argyle, where he continued to reside until his death, which took place on the 22d day of November, 1829.
+
+ID# : 11
+
+
+<LOCATION>Oswego</LOCATION>
+
+sentence: The latter is still living in the county of Oswego, near the city of that name; my mother died during the period of my captivity.
+
+ID# : 12
+
+
+Latitude: 41.68281
+Longitude: -88.35146
+
+
+<LOCATION>Africa</LOCATION>
+
+sentence: His whole life was passed in the peaceful pursuits of agriculture, never seeking employment in those more menial positions, which seem to be especially allotted to the children of Africa.
+
+ID# : 13
+
+
+<LOCATION>Louisiana</LOCATION>
+
+sentence: How often since that time has the recollection of his paternal counsels occurred to me, while lying in a slave hut in the distant and sickly regions of Louisiana, smarting with the undeserved wounds which an inhuman master had inflicted, and longing only for the grave which had covered him, to shield me also from the lash of the oppressor.
+
+ID# : 14
+
+
+<LOCATION>Fort Edward</LOCATION>
+
+sentence: The ceremony was performed at Fort Edward, by Timothy Eddy, Esq., a magistrate of that town, and still a prominent citizen of the place.
+
+ID# : 15
+
+
+<LOCATION>Esq.</LOCATION>
+
+sentence: The ceremony was performed at Fort Edward, by Timothy Eddy, Esq., a magistrate of that town, and still a prominent citizen of the place.
+
+ID# : 16
+
+
+<LOCATION>Salem</LOCATION>
+
+sentence: She had resided a long time at Sandy Hill, with Mr. Baird, proprietor of the Eagle Tavern, and also in the family of Rev. Alexander Proudfit, of Salem.
+
+ID# : 17
+
+
+Latitude: 11.65
+Longitude: 78.16667
+
+
+<LOCATION>Fort Edward</LOCATION>
+
+sentence: Immediately upon our marriage we commenced house-keeping, in the old yellow building then standing at the southern extremity of Fort Edward village, and which has since been transformed into a modern mansion, and lately occupied by Captain Lathrop.
+
+ID# : 18
+
+
+<LOCATION>Fort</LOCATION>
+
+sentence: It was also occupied by Burgoyne in 1777, being situated near the old Fort on the left bank of the Hudson.
+
+ID# : 19
+
+
+<LOCATION>Hudson</LOCATION>
+
+sentence: It was also occupied by Burgoyne in 1777, being situated near the old Fort on the left bank of the Hudson.
+
+ID# : 20
+
+
+Latitude: 41.24006
+Longitude: -81.44067
+
+
+<LOCATION>Champlain Canal</LOCATION>
+
+sentence: During the winter I was employed with others repairing the Champlain Canal, on that section over which William Van Nortwick was superintendent.
+
+ID# : 21
+
+
+<LOCATION>Lake Champlain</LOCATION>
+
+sentence: Having hired several efficient hands to assist me, I entered into contracts for the transportation of large rafts of timber from Lake Champlain to Troy.
+
+ID# : 22
+
+
+<LOCATION>Canada</LOCATION>
+
+sentence: In one of my voyages down Lake Champlain, I was induced to make a visit to Canada.
+
+ID# : 23
+
+
+<LOCATION>Montreal</LOCATION>
+
+sentence: Repairing to Montreal, I visited the cathedral and other places of interest in that city, from whence I continued my excursion to Kingston and other towns, obtaining a knowledge of localities, which was also of service to me afterwards, as will appear towards the close of this narrative.
+
+ID# : 24
+
+
+Latitude: 45.50884
+Longitude: -73.58781
+
+
+<LOCATION>Kingston</LOCATION>
+
+sentence: Repairing to Montreal, I visited the cathedral and other places of interest in that city, from whence I continued my excursion to Kingston and other towns, obtaining a knowledge of localities, which was also of service to me afterwards, as will appear towards the close of this narrative.
+
+ID# : 25
+
+
+Latitude: 17.99702
+Longitude: -76.79358
+
+
+<LOCATION>Hartford</LOCATION>
+
+sentence: With one cow, one swine, a yoke of fine oxen I had lately purchased of Lewis Brown, in Hartford, and other personal property and effects, we proceeded to our new home in Kingsbury.
+
+ID# : 26
+
+
+Latitude: 41.76371
+Longitude: -72.68509
+
+
+<LOCATION>Kingsbury</LOCATION>
+
+sentence: With one cow, one swine, a yoke of fine oxen I had lately purchased of Lewis Brown, in Hartford, and other personal property and effects, we proceeded to our new home in Kingsbury.
+
+ID# : 27
+
+
+<LOCATION>Kingsbury</LOCATION>
+
+sentence: Well, indeed, would it have been for us had we remained on the farm at Kingsbury; but the time came when the next step was to be taken towards the cruel destiny that awaited me.
+
+ID# : 28
+
+
+<LOCATION>Saratoga Springs</LOCATION>
+
+sentence: In March, 1834, we removed to Saratoga Springs.
+
+ID# : 29
+
+
+Latitude: 43.08313
+Longitude: -73.78457
+
+
+<LOCATION>Washington</LOCATION>
+
+sentence: We occupied a house belonging to Daniel O'Brien, on the north side of Washington street.
+
+ID# : 30
+
+
+Latitude: 54.9
+Longitude: -1.51667
+
+
+<LOCATION>Washington</LOCATION>
+
+sentence: At that time Isaac Taylor kept a large boarding house, known as Washington Hall, at the north end of Broadway.
+
+ID# : 31
+
+
+Latitude: 54.9
+Longitude: -1.51667
+
+
+<LOCATION>Broadway</LOCATION>
+
+sentence: At that time Isaac Taylor kept a large boarding house, known as Washington Hall, at the north end of Broadway.
+
+ID# : 32
+
+
+<LOCATION>United States Hotel</LOCATION>
+
+sentence: After this time I was generally employed through the visiting season, as also was Anne, in the United States Hotel, and other public houses of the place.
+
+ID# : 33
+
+
+<LOCATION>Saratoga</LOCATION>
+
+sentence: In winter seasons I relied upon my violin, though during the construction of the Troy and Saratoga railroad, I performed many hard days' labor upon it.
+
+ID# : 34
+
+
+Latitude: 37.26383
+Longitude: -122.02301
+
+
+<LOCATION>Saratoga</LOCATION>
+
+sentence: I was in the habit, at Saratoga, of purchasing articles necessary for my family at the stores of Mr. Cephas Parker and Mr. William Perry, gentlemen towards whom, for many acts of kindness, I entertained feelings of strong regard.
+
+ID# : 35
+
+
+Latitude: 37.26383
+Longitude: -122.02301
+
+
+<LOCATION>United States Hotel</LOCATION>
+
+sentence: While living at the United States Hotel, I frequently met with slaves, who had accompanied their masters from the South.
+
+ID# : 36
+
+
+<LOCATION>South</LOCATION>
+
+sentence: While living at the United States Hotel, I frequently met with slaves, who had accompanied their masters from the South.
+
+ID# : 37
+
+
+<LOCATION>Saratoga</LOCATION>
+
+sentence: I continued to reside at Saratoga until the spring of 1841.
+
+ID# : 38
+
+
+Latitude: 37.26383
+Longitude: -122.02301
+
+
+<LOCATION>Hudson</LOCATION>
+
+sentence: The flattering anticipations which, seven years before, had seduced us from the quiet farm-house, on the east side of the Hudson, had not been realized.
+
+ID# : 39
+
+
+Latitude: 41.24006
+Longitude: -81.44067
+
+
+<LOCATION>Saratoga</LOCATION>
+
+sentence: When not at labor I was always walking with them, clad in their best attire, through the streets and groves of Saratoga.
+
+ID# : 40
+
+
+Latitude: 37.26383
+Longitude: -122.02301
+
+

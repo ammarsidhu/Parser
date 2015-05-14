@@ -1,0 +1,156 @@
+import java.io.FileWriter;
+import java.sql.*;
+import java.io.PrintWriter;
+import java.util.List;
+
+import edu.stanford.nlp.ie.AbstractSequenceClassifier;
+import edu.stanford.nlp.ie.crf.CRFClassifier;
+import edu.stanford.nlp.io.IOUtils;
+import edu.stanford.nlp.ling.CoreAnnotations;
+import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.util.StringUtils;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+
+public class Test {
+	
+	// JDBC driver name and database URL
+	   static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
+	   static final String DB_URL = "jdbc:mysql://localhost/thesis";
+
+	   //  Database credentials
+	   static final String USER = "root";
+	   static final String PASS = "Sr20de-t";
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) throws Exception{
+		// TODO Auto-generated method stub
+		String serializedClassifier = "classifiers/english.all.3class.distsim.crf.ser.gz";
+	    FileWriter file = new FileWriter("data1.json");
+	    PrintWriter writer = new PrintWriter("output.txt");
+
+	    AbstractSequenceClassifier<CoreLabel> classifier = CRFClassifier.getClassifier(serializedClassifier);
+	    
+	    Connection conn = null;
+	    Statement stmt = null;
+	    
+	    try{
+	        // Register JDBC driver
+	        Class.forName("com.mysql.jdbc.Driver");
+	    }catch(Exception e){
+	        //Handle errors for Class.forName
+	        e.printStackTrace();
+	     }
+	    
+	  //STEP 3: Open a connection
+	      conn = DriverManager.getConnection(DB_URL,USER,PASS);
+
+	      //STEP 4: Execute a query
+	      stmt = conn.createStatement();
+	      
+	   
+	    if (args.length > 0) {
+	      String fileContents = IOUtils.slurpFile(args[0]);
+	      List<List<CoreLabel>> out = classifier.classify(fileContents);
+	      
+	      out = classifier.classifyFile(args[0]);
+	      String compound = null;
+	      String wordclass = null;
+	      double latitude = 0;
+	      double longitude = 0;
+	      String sql;
+	      ResultSet rs= null;
+	      boolean foundRows = false; 
+	      
+	      JSONArray list = new JSONArray();
+	      int counter = 0;
+      	
+	      
+	      for (List<CoreLabel> sentence : out) {
+	        for (CoreLabel word : sentence) {
+	        	if (word.get(CoreAnnotations.AnswerAnnotation.class).contentEquals("LOCATION") /*||word.get(CoreAnnotations.AnswerAnnotation.class).contentEquals("PERSON")*/){
+	        		if (compound == null){
+	        			compound = word.word();
+	        			wordclass = word.get(CoreAnnotations.AnswerAnnotation.class);
+	        		}
+	        		else{
+	        			compound = compound + " " + word.word();
+	        		}
+	        	}
+	        	else{
+	        		if(compound != null){
+	        			String sentence1 = StringUtils.join(sentence, " ");
+	        			String sentence2 = sentence1.replaceAll("\\s+(?=\\p{Punct})", "");
+			        	System.out.print('<' + wordclass + '>' + compound + "</" + wordclass + ">\n");
+			        	System.out.print("sentence: " + sentence2 + "\n");
+			        	System.out.print("ID# : " + counter + "\n\n");
+			        	
+			        	writer.println('<' + wordclass + '>' + compound + "</" + wordclass + ">\n");
+			        	writer.println("sentence: " + sentence2 + "\n");
+			        	writer.println("ID# : " + counter + "\n\n");
+			        	counter++;
+			        	
+			        	
+			        	//sql = "select name,asciiname,latitude,longitude from thesis.geonames where name = '" + compound + "' or asciiname = '" + compound + "' limit 1";
+			        	sql = "select name,asciiname,latitude,longitude,population from thesis.geonames where name = '" + compound + "' or asciiname = '" + compound + "'order by population desc limit 1;";
+			  	      	//order by population desc limit 1; //for highest population
+			        	rs = stmt.executeQuery(sql);
+			  	      	
+				  	    if(rs.next()){
+				  	    	String name;
+				  	    	if (!rs.getString("name").isEmpty())
+				  	    		name = rs.getString("name");
+				  	    	else
+				  	    		name = rs.getString("asciiname");
+				  	    	foundRows = true;
+				  	    	latitude  = rs.getDouble("latitude");
+				  	        longitude = rs.getDouble("longitude");
+				  	        System.out.print("Latitude: " + latitude + "\nLongitude: " + longitude + "\n\n");
+				  	        writer.println("Latitude: " + latitude + "\nLongitude: " + longitude + "\n\n");
+				  	    }
+				  	    else{
+				  	    	foundRows = false;
+				  	    	latitude = 0;
+				  	    	longitude = 0;
+				  	    }
+				  	    
+	        			JSONObject obj = new JSONObject();
+	        			obj.put("city", compound);
+	        			obj.put("text", sentence2);
+	        			obj.put("geocode", foundRows);
+	        			obj.put("latitude", latitude);
+	        			obj.put("longitude", longitude);
+	        			
+	        			list.add(obj);
+	        			compound = null;
+			  	      	wordclass = null;
+	        		}
+	        	}
+	        }
+	      }
+	      file.write(list.toJSONString());
+	      file.flush();
+	      file.close();
+	      writer.close();
+	      rs.close();
+	      try{
+	          if(stmt!=null)
+	             stmt.close();
+	       }catch(SQLException se2){
+	       }// nothing we can do
+	       try{
+	          if(conn!=null)
+	             conn.close();
+	       }catch(SQLException se){
+	          se.printStackTrace();
+	       }
+
+	    } 
+	  }
+
+	
+
+}

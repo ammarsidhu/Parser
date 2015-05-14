@@ -15,13 +15,21 @@ import org.json.simple.JSONObject;
 
 public class Test {
 	
+		// JDBC driver name and database URL
+//	   static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
+//	   static final String DB_URL = "jdbc:mysql://localhost/geonarrative/geonames"; //change
+//
+//	   //  Database credentials
+//	   static final String USER = "geonarrative";
+//	   static final String PASS = "JK93!2CFs^^53xa"; ////change
+	
 	// JDBC driver name and database URL
 	   static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
-	   static final String DB_URL = "jdbc:mysql://localhost/thesis";
+	   static final String DB_URL = "jdbc:mysql://localhost/thesis"; //change
 
 	   //  Database credentials
 	   static final String USER = "root";
-	   static final String PASS = "Sr20de-t";
+	   static final String PASS = "Sr20de-t"; ////change
 
 	/**
 	 * @param args
@@ -30,6 +38,7 @@ public class Test {
 		// TODO Auto-generated method stub
 		String serializedClassifier = "classifiers/english.all.3class.distsim.crf.ser.gz";
 	    FileWriter file = new FileWriter("data1.json");
+	    PrintWriter writer = new PrintWriter("output.txt");
 
 	    AbstractSequenceClassifier<CoreLabel> classifier = CRFClassifier.getClassifier(serializedClassifier);
 	    
@@ -65,6 +74,8 @@ public class Test {
 	      boolean foundRows = false; 
 	      
 	      JSONArray list = new JSONArray();
+	      int counter = 0;
+      	
 	      
 	      for (List<CoreLabel> sentence : out) {
 	        for (CoreLabel word : sentence) {
@@ -83,8 +94,16 @@ public class Test {
 	        			String sentence2 = sentence1.replaceAll("\\s+(?=\\p{Punct})", "");
 			        	System.out.print('<' + wordclass + '>' + compound + "</" + wordclass + ">\n");
 			        	System.out.print("sentence: " + sentence2 + "\n");
-	        			
-			        	sql = "select name,asciiname,latitude,longitude from thesis.geonames where name = '" + compound + "' or asciiname = '" + compound + "' limit 1";
+			        	System.out.print("ID# : " + counter + "\n\n");
+			        	
+			        	writer.println('<' + wordclass + '>' + compound + "</" + wordclass + ">\n");
+			        	writer.println("sentence: " + sentence2 + "\n");
+			        	writer.println("ID# : " + counter + "\n\n");
+			        	counter++;
+			        	
+			        	
+			        	//sql = "select name,asciiname,latitude,longitude from thesis.geonames where name = '" + compound + "' or asciiname = '" + compound + "' limit 1";
+			        	sql = "select name,asciiname,latitude,longitude,population from thesis.geonames where name = '" + compound + "' or asciiname = '" + compound + "'order by population desc limit 1;";
 			  	      	//order by population desc limit 1; //for highest population
 			        	rs = stmt.executeQuery(sql);
 			  	      	
@@ -98,6 +117,7 @@ public class Test {
 				  	    	latitude  = rs.getDouble("latitude");
 				  	        longitude = rs.getDouble("longitude");
 				  	        System.out.print("Latitude: " + latitude + "\nLongitude: " + longitude + "\n\n");
+				  	        writer.println("Latitude: " + latitude + "\nLongitude: " + longitude + "\n\n");
 				  	    }
 				  	    else{
 				  	    	foundRows = false;
@@ -122,7 +142,7 @@ public class Test {
 	      file.write(list.toJSONString());
 	      file.flush();
 	      file.close();
-	      
+	      writer.close();
 	      rs.close();
 	      try{
 	          if(stmt!=null)

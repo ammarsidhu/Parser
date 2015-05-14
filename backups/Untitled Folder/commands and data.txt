@@ -1,0 +1,2 @@
+server location: /var/www/html/info.php
+open up sudo file explorer: sudo nautilus /var/www
