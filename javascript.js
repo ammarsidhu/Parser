@@ -44,7 +44,6 @@ function initialise() {
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
     
     getdata();
-    //test1();
     testgeo();
     
     
@@ -58,7 +57,21 @@ function getdata(){
     $.ajaxSetup( { "async": true } );
 }
 
-function test1(index, data1){
+
+function testgeo(){
+    var deferstack = [];
+    for (; iter < data.length; iter++ ) {
+        if (data[iter].geocode === false){
+                deferstack.push(geocode(iter,data[iter]));
+        }  
+    }
+    
+    $.when.apply($, deferstack).done(function() {
+                moreAddresses();
+    });
+}
+
+function geocode(index, data1){
     geocoder = new google.maps.Geocoder();
     return $.Deferred(function(deferred) {
         var url_addr = encodeURIComponent(data1.city);
@@ -66,7 +79,6 @@ function test1(index, data1){
             var results = reqdata.results,
             status = reqdata.status;
             if (status == google.maps.GeocoderStatus.OK) {
-                alert(results[0].geometry.location.lat);
                 data[index].latitude = results[0].geometry.location.lat;
                 data[index].longitude = results[0].geometry.location.lng;
                 data[index].geocode = true;
@@ -79,44 +91,6 @@ function test1(index, data1){
                 alert("Geocode failed: " + status);
             }
         })
-    });
-}
-
-function testgeo(){
-    var deferstack = [];
-    for (; iter < data.length; iter++ ) {
-        if (data[iter].geocode === false){
-                  //deferstack.push(geocode(iter,data[iter]));
-                deferstack.push(test1(iter,data[iter]));
-        }  
-    }
-    
-    $.when.apply($, deferstack).done(function() {
-                moreAddresses();
-    });
-}
-
-
-
-function geocode(index, data1){
-    geocoder = new google.maps.Geocoder();
-    return $.Deferred(function(deferred) {
-        geocoder.geocode( { 'address': data1.city}, function(results, status) {
-            if (status == google.maps.GeocoderStatus.OK) {
-
-                data[index].latitude = results[0].geometry.location.lat();
-                data[index].longitude = results[0].geometry.location.lng();
-                data[index].geocode = true;
-                deferred.resolve();
-                
-
-            } else if (status === google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
-                nogeoarray.push(index);
-                deferred.resolve();
-            }else {
-                alert("Geocode failed: " + status);
-            }
-        });
     });
 }
 
@@ -335,18 +309,7 @@ function showsubsetoflines(index){
     
 }
 
-function wait(ms) {
-      var deferred = $.Deferred();
-      setTimeout(deferred.resolve, ms);
 
-     // We just need to return the promise not the whole deferred.
-     return deferred.promise();
-  }
-
-// Use it
-//  wait(1500).then(function () {
-      // Do something brilliant here!
-//  });
   
 		
 		
