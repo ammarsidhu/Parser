@@ -79,8 +79,10 @@ function geocode(index, data1){
             var results = reqdata.results,
             status = reqdata.status;
             if (status == google.maps.GeocoderStatus.OK) {
-                data[index].latitude = results[0].geometry.location.lat;
-                data[index].longitude = results[0].geometry.location.lng;
+                var latitude = results[0].geometry.location.lat;
+                var longitude = results[0].geometry.location.lng;
+                data[index].latitude = latitude;
+                data[index].longitude = longitude;
                 data[index].geocode = true;
                 deferred.resolve();
             } else if (status === google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
@@ -93,7 +95,6 @@ function geocode(index, data1){
         })
     });
 }
-
 
 	
 function moreAddresses() {
@@ -160,12 +161,15 @@ function addExisting(data){
     var index = cityToMarkersArray[data.city];
     var content = markers[index].info.getContent(this);
     var location = markers[index].getPosition();
-    markers[index].setMap(null);
-    markers[index] = null;
+    //markers[index].setMap(null);
+    //markers[index] = null;
     var string = '<a href="#a' + textArray.length + '">' + data.text +  "</a>";
 
     content = content + "<p>" + string +  "</p>";
-    var marker = new google.maps.Marker({
+    
+    markers[index].info.setContent(content);
+    
+    /*var marker = new google.maps.Marker({
         map: map, 
         position: location,
         title: data.city
@@ -192,9 +196,9 @@ function addExisting(data){
                 showsubsetoflines(cityToMarkersArray[marker.title]);
             }
         
-    });
+    });*/
     
-    markers[index] = marker;
+    //markers[index] = marker;
     textToMarkersArray[data.text] = index;
     textArray.push(data.text);
     idNametoArray["a" + (textArray.length - 1) ] = index;
