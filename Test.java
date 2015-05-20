@@ -28,8 +28,8 @@ public class Test {
 	   static final String DB_URL = "jdbc:mysql://localhost/thesis"; //change
 
 	   //  Database credentials
-	   static final String USER = "root";
-	   static final String PASS = "Sr20de-t"; ////change
+	   static final String USER = "test";
+	   static final String PASS = "test"; ////change
 
 	/**
 	 * @param args

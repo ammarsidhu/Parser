@@ -6,6 +6,8 @@ var geocoder;
 var pathlineArray = [];
 var markers = [];
 var textArray = [];
+var geonamesdatabasearray = [];
+var nogeoarray = [];
 var cityToMarkersArray = {};    //convert city name to marker array index
 var textToMarkersArray = {};    //convert text name to marker array index
 var idNametoArray = {};         //convert html anchor to marker array index
@@ -14,7 +16,6 @@ var lastposition;               //last position for lines
 var subsetflag = false;         //flag for subset of lines
 var clickindex=0;               //last icon clicked
 var ioutside;
-var nogeoarray = [];
 var iter = 0;
 var missinggeo = true;
 
@@ -68,6 +69,7 @@ function testgeo(){
     
     $.when.apply($, deferstack).done(function() {
                 moreAddresses();
+                updategeonamesarray();
     });
 }
 
@@ -81,6 +83,27 @@ function geocode(index, data1){
             if (status == google.maps.GeocoderStatus.OK) {
                 var latitude = results[0].geometry.location.lat;
                 var longitude = results[0].geometry.location.lng;
+                var country;
+                
+                for (var i=0; i<results[0].address_components.length; i++) {
+                    for (var b=0;b<results[0].address_components[i].types.length;b++) {
+                        if (results[0].address_components[i].types[b] == "country") {
+                            //this is the object you are looking for
+                            country = results[0].address_components[i].short_name;  
+                            break;
+                        }
+                    }
+                }
+                
+                                
+                if (typeof country == "undefined"){
+                    country = "XX";
+                }
+                
+                
+                var locationdata = {name: data1.city, latitude:latitude, longitude:longitude, country:country, population:-1};
+                geonamesdatabasearray.push(locationdata);
+                
                 data[index].latitude = latitude;
                 data[index].longitude = longitude;
                 data[index].geocode = true;
@@ -96,6 +119,18 @@ function geocode(index, data1){
     });
 }
 
+function updategeonamesarray(){
+    $.ajax({
+        url: 'update_geonames_database.php',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(geonamesdatabasearray),
+        dataType: 'json',
+        success: function(msg) {
+            alert(msg);
+        }
+    })
+}
 	
 function moreAddresses() {
         for (var i in data) {
@@ -132,6 +167,7 @@ function addMarker(data, location){
     marker.info = new google.maps.InfoWindow({
           content: "<h3>"+ data.city + "</h3>" + string
         });
+    cityToMarkersArray[data.city] = markers.length;
 
     google.maps.event.addListener(marker, 'click', function() {
             for(i in markers){
@@ -145,10 +181,10 @@ function addMarker(data, location){
             marker.info.open(map, marker);
             if (subsetflag == true)
             {
-                showsubsetoflines(cityToMarkersArray[marker.title]);
+                //showsubsetoflines(cityToMarkersArray[marker.title]);
+                showsubsetoflines(cityToMarkersArray[data.city]);
             }
         });
-    cityToMarkersArray[data.city] = markers.length;
     textToMarkersArray[data.text] = markers.length;
     idNametoArray["a" + (markers.length) ] = markers.length;
     markers.push(marker);
@@ -161,44 +197,13 @@ function addExisting(data){
     var index = cityToMarkersArray[data.city];
     var content = markers[index].info.getContent(this);
     var location = markers[index].getPosition();
-    //markers[index].setMap(null);
-    //markers[index] = null;
     var string = '<a href="#a' + textArray.length + '">' + data.text +  "</a>";
 
     content = content + "<p>" + string +  "</p>";
     
     markers[index].info.setContent(content);
     
-    /*var marker = new google.maps.Marker({
-        map: map, 
-        position: location,
-        title: data.city
-    });
-    marker.setIcon('http://maps.google.com/mapfiles/marker.png');
     
-    marker.info = new google.maps.InfoWindow({
-          content: content
-    });
-    
-
-    google.maps.event.addListener(marker, 'click', function() {
-            clickindex = index;
-            for(i in markers){
-                markers[i].setIcon('http://maps.google.com/mapfiles/marker.png');
-            }
-            marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
-            for(i in markers){
-                markers[i].info.close();
-            }
-            marker.info.open(map, marker);
-            if (subsetflag == true)
-            {
-                showsubsetoflines(cityToMarkersArray[marker.title]);
-            }
-        
-    });*/
-    
-    //markers[index] = marker;
     textToMarkersArray[data.text] = index;
     textArray.push(data.text);
     idNametoArray["a" + (textArray.length - 1) ] = index;
