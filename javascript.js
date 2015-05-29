@@ -69,7 +69,7 @@ function testgeo(){
     
     $.when.apply($, deferstack).done(function() {
                 moreAddresses();
-                updategeonamesarray();
+                //updategeonamesarray();
     });
 }
 
@@ -149,7 +149,8 @@ function moreAddresses() {
             }
         }
     convertToHtml();
-    
+    console.table(idNametoArray);
+    console.table(cityToMarkersArray);
     
 }
     
@@ -181,7 +182,6 @@ function addMarker(data, location){
             marker.info.open(map, marker);
             if (subsetflag == true)
             {
-                //showsubsetoflines(cityToMarkersArray[marker.title]);
                 showsubsetoflines(cityToMarkersArray[data.city]);
             }
         });
@@ -244,10 +244,8 @@ function convertToHtml(){
     jQuery.get('sample.txt', function(data) {
     var string = data;
     for (var i in textArray){
-            //var stringreplace = '<a id="a' + i + '" style="background-color:yellow" href="#" onclick="centerOnMarker(this.text);">' + textArray[i] + "</a>";
-            var stringreplace = '<a id="a' + i + '" style="background-color:yellow" href="#" onclick="centerOnMarker(this);">' + textArray[i] + "</a>";
-            //data = data.replace(textArray[i], stringreplace);
-            
+            //var stringreplace = '<a id="a' + i + '"  style="background-color:yellow" href="#" onclick="centerOnMarker(this);">' + textArray[i] + "</a>";
+            var stringreplace = '<a id="a' + i + '"  class="jumpanchor" style="background-color:yellow" href="#" onclick="centerOnMarker(this);">' + textArray[i] + "</a>";
             
             var num = textArray[i].split(' ');
             var t = num[0];
@@ -318,8 +316,86 @@ function showsubsetoflines(index){
     
 }
 
+function removemarkers(){
+    for(i in markers){
+        markers[i].setMap(null);
+    }
+}
 
+function restoremarkers(){
+     for(i in markers){
+        markers[i].setMap(map);
+    }
+}
+
+
+function setmarkervisible(pass){
+    var index = idNametoArray[pass.id];
+    if(index == undefined){
+        //console.log("on undefined id:" + pass.id)
+    }else{
+        markers[index].setMap(map);
+        pathlineArray[index].setMap(map);
+    }
+}
+
+function setmarkerinvisible(pass){
+    var index = idNametoArray[pass.id];
+   if(index == undefined){
+        //console.log("off undefined id:" + pass.id)
+    }else{
+        markers[index].setMap(null);
+        pathlineArray[index].setMap(null);
+    }
+}
+
+
+function isScrolledIntoView(elem) {
+    if ($(elem).length == 0) {
+        return false;
+    }
+    var docViewTop = $('#inputtext').scrollTop();
+    var docViewBottom = docViewTop + $('#inputtext').height();
+
+    var elemTop = $(elem).offset().top;
+    //var elemTop = $(elem).getBoundingClientRect().top
+    var elemBottom = elemTop + $(elem).height();
+        
+    //return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop)); //try it, will only work for text
+    return (docViewBottom >= elemTop && docViewTop <= elemBottom);
+}
+
+//function isScrolledIntoView(ele) {
+// 
+//    
+//    var lBound =  $('#inputtext').scrollTop(),
+//        uBound = lBound +  $('#inputtext').height(),
+//        top = $(ele).offset().top,
+//        bottom = top + $(ele).outerHeight(true);
+//
+//    return (top > lBound && top < uBound)
+//        || (bottom > lBound && bottom < uBound)
+//        || (lBound >= top && lBound <= bottom)
+//        || (uBound >= top && uBound <= bottom);
+//}
+
+
+
+
+jQuery(function($) {
+    $('#content').bind('scroll', function() {
+        $('.jumpanchor').each(function () {
+            if(isScrolledIntoView(this)){
+                //console.log(this.id);
+                setmarkervisible(this);
+            }
+            else{
+                setmarkerinvisible(this);
+            }
+        });
+    })
+});
   
-		
+
 		
 google.maps.event.addDomListener(window, 'load', initialise);

@@ -16,14 +16,14 @@
             border: 1px solid #999;
         }
         #content{
-            height: 650px;
+            height: 100%;
             overflow:auto;
-            padding-bottom: 30px;
+            
             white-space: pre-wrap;
         }
         #inputtext{
             max-width: 500px; 
-            height: 10px; 
+            height: 100%; 
             white-space: pre-wrap; 
             float:right;
         }
@@ -36,9 +36,12 @@
     <div id="map-canvas" style= float:left; position:fixed;></div>
       <div  id = "content"> <pre id="inputtext" ></pre></div>
     <div id="panel">
-      <input onclick="javascript:removeline();" type=button value="Remove line">
-      <input onclick="javascript:showline();" type=button value="Restore line">
-    <input onclick="javascript:showsubsetoflines(clickindex);" type=button value="Show Subset">
+        <input onclick="javascript:removeline();" type=button value="Remove line">
+        <input onclick="javascript:showline();" type=button value="Restore line">
+        <input onclick="javascript:showsubsetoflines(clickindex);" type=button value="Show Subset">
+        <input onclick="javascript:removemarkers();" type=button value="Remove Markers">
+        <input onclick="javascript:restoremarkers();" type=button value="Restore Markers">
+        
     </div>
      
     

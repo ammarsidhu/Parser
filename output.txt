@@ -5,11 +5,19 @@ sentence: Since my return to liberty, I have not failed to perceive the increasi
 ID# : 0
 
 
+Latitude: 39.470989
+Longitude: -80.2888748
+
+
 <LOCATION>Rhode Island</LOCATION>
 
 sentence: As far back as I have been able to ascertain, my ancestors on the paternal side were slaves in Rhode Island.
 
 ID# : 1
+
+
+Latitude: 41.5800945
+Longitude: -71.4774291
 
 
 <LOCATION>Hoosic</LOCATION>
@@ -19,11 +27,19 @@ sentence: They belonged to a family by the name of Northup, one of whom, removin
 ID# : 2
 
 
+Latitude: 42.19769
+Longitude: -71.13389
+
+
 <LOCATION>Rensselaer county</LOCATION>
 
 sentence: They belonged to a family by the name of Northup, one of whom, removing to the State of New-York, settled at Hoosic, in Rensselaer county.
 
 ID# : 3
+
+
+Latitude: 42.673664
+Longitude: -73.5594128
 
 
 <LOCATION>Esq.</LOCATION>
@@ -33,6 +49,10 @@ sentence: Henry B. Northup, Esq., of Sandy Hill, a distinguished counselor at la
 ID# : 4
 
 
+Latitude: -6.9420825
+Longitude: 107.6590297
+
+
 <LOCATION>Minerva</LOCATION>
 
 sentence: Sometime after my father's liberation, he removed to the town of Minerva, Essex county, N. Y., where I was born, in the month of July, 1808.
@@ -40,11 +60,19 @@ sentence: Sometime after my father's liberation, he removed to the town of Miner
 ID# : 5
 
 
+Latitude: 40.7462936
+Longitude: -81.1447711
+
+
 <LOCATION>Essex county</LOCATION>
 
 sentence: Sometime after my father's liberation, he removed to the town of Minerva, Essex county, N. Y., where I was born, in the month of July, 1808.
 
 ID# : 6
+
+
+Latitude: 51.7668369
+Longitude: 0.4757762
 
 
 <LOCATION>Granville</LOCATION>
@@ -65,11 +93,19 @@ sentence: From thence he removed to Granville, Washington county, near a place k
 ID# : 8
 
 
+Latitude: 37.9291754
+Longitude: -90.7313043
+
+
 <LOCATION>Moss Street</LOCATION>
 
 sentence: From thence he removed to Granville, Washington county, near a place known as Slyborough, where, for some years, he labored on the farm of Clark Northup, also a relative of his old master; from thence he removed to the Alden farm, at Moss Street, a short distance north of the village of Sandy Hill; and from thence to the farm now owned by Russel Pratt, situated on the road leading from Fort Edward to Argyle, where he continued to reside until his death, which took place on the 22d day of November, 1829.
 
 ID# : 9
+
+
+Latitude: 43.3218516
+Longitude: -73.5715735
 
 
 <LOCATION>Sandy Hill</LOCATION>
@@ -79,11 +115,19 @@ sentence: From thence he removed to Granville, Washington county, near a place k
 ID# : 10
 
 
+Latitude: 29.7997542
+Longitude: -98.4911575
+
+
 <LOCATION>Fort Edward</LOCATION>
 
 sentence: From thence he removed to Granville, Washington county, near a place known as Slyborough, where, for some years, he labored on the farm of Clark Northup, also a relative of his old master; from thence he removed to the Alden farm, at Moss Street, a short distance north of the village of Sandy Hill; and from thence to the farm now owned by Russel Pratt, situated on the road leading from Fort Edward to Argyle, where he continued to reside until his death, which took place on the 22d day of November, 1829.
 
 ID# : 11
+
+
+Latitude: 43.2670175
+Longitude: -73.5845597
 
 
 <LOCATION>Oswego</LOCATION>
@@ -104,11 +148,19 @@ sentence: His whole life was passed in the peaceful pursuits of agriculture, nev
 ID# : 13
 
 
+Latitude: -8.783195
+Longitude: 34.508523
+
+
 <LOCATION>Louisiana</LOCATION>
 
 sentence: How often since that time has the recollection of his paternal counsels occurred to me, while lying in a slave hut in the distant and sickly regions of Louisiana, smarting with the undeserved wounds which an inhuman master had inflicted, and longing only for the grave which had covered him, to shield me also from the lash of the oppressor.
 
 ID# : 14
+
+
+Latitude: 30.9842977
+Longitude: -91.9623327
 
 
 <LOCATION>Fort Edward</LOCATION>
@@ -118,11 +170,19 @@ sentence: The ceremony was performed at Fort Edward, by Timothy Eddy, Esq., a ma
 ID# : 15
 
 
+Latitude: 43.2670175
+Longitude: -73.5845597
+
+
 <LOCATION>Esq.</LOCATION>
 
 sentence: The ceremony was performed at Fort Edward, by Timothy Eddy, Esq., a magistrate of that town, and still a prominent citizen of the place.
 
 ID# : 16
+
+
+Latitude: -6.9420825
+Longitude: 107.6590297
 
 
 <LOCATION>Salem</LOCATION>
@@ -143,11 +203,19 @@ sentence: Immediately upon our marriage we commenced house-keeping, in the old y
 ID# : 18
 
 
+Latitude: 43.2670175
+Longitude: -73.5845597
+
+
 <LOCATION>Fort</LOCATION>
 
 sentence: It was also occupied by Burgoyne in 1777, being situated near the old Fort on the left bank of the Hudson.
 
 ID# : 19
+
+
+Latitude: 18.9352599
+Longitude: 72.8371511
 
 
 <LOCATION>Hudson</LOCATION>
@@ -168,6 +236,10 @@ sentence: During the winter I was employed with others repairing the Champlain C
 ID# : 21
 
 
+Latitude: 43.1736961
+Longitude: -73.5794724
+
+
 <LOCATION>Lake Champlain</LOCATION>
 
 sentence: Having hired several efficient hands to assist me, I entered into contracts for the transportation of large rafts of timber from Lake Champlain to Troy.
@@ -175,11 +247,19 @@ sentence: Having hired several efficient hands to assist me, I entered into cont
 ID# : 22
 
 
+Latitude: 44.586581
+Longitude: -73.3800905
+
+
 <LOCATION>Canada</LOCATION>
 
 sentence: In one of my voyages down Lake Champlain, I was induced to make a visit to Canada.
 
 ID# : 23
+
+
+Latitude: 56.130366
+Longitude: -106.346771
 
 
 <LOCATION>Montreal</LOCATION>
@@ -222,11 +302,19 @@ sentence: With one cow, one swine, a yoke of fine oxen I had lately purchased of
 ID# : 27
 
 
+Latitude: 38.97713
+Longitude: -119.9068468
+
+
 <LOCATION>Kingsbury</LOCATION>
 
 sentence: Well, indeed, would it have been for us had we remained on the farm at Kingsbury; but the time came when the next step was to be taken towards the cruel destiny that awaited me.
 
 ID# : 28
+
+
+Latitude: 38.97713
+Longitude: -119.9068468
 
 
 <LOCATION>Saratoga Springs</LOCATION>
@@ -269,11 +357,19 @@ sentence: At that time Isaac Taylor kept a large boarding house, known as Washin
 ID# : 32
 
 
+Latitude: 40.790885
+Longitude: -73.9747115
+
+
 <LOCATION>United States Hotel</LOCATION>
 
 sentence: After this time I was generally employed through the visiting season, as also was Anne, in the United States Hotel, and other public houses of the place.
 
 ID# : 33
+
+
+Latitude: 33.0132526
+Longitude: -79.9775502
 
 
 <LOCATION>Saratoga</LOCATION>
@@ -305,11 +401,19 @@ sentence: While living at the United States Hotel, I frequently met with slaves,
 ID# : 36
 
 
+Latitude: 33.0132526
+Longitude: -79.9775502
+
+
 <LOCATION>South</LOCATION>
 
 sentence: While living at the United States Hotel, I frequently met with slaves, who had accompanied their masters from the South.
 
 ID# : 37
+
+
+Latitude: 44.4669941
+Longitude: -73.1709604
 
 
 <LOCATION>Saratoga</LOCATION>

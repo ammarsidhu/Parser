@@ -15,13 +15,13 @@ import org.json.simple.JSONObject;
 
 public class Test {
 	
-		// JDBC driver name and database URL
+		//JDBC driver name and database URL
 //	   static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
-//	   static final String DB_URL = "jdbc:mysql://localhost/geonarrative/geonames"; //change
+//	   static final String DB_URL = "jdbc:mysql://localhost/geonarrative"; //change
 //
 //	   //  Database credentials
-//	   static final String USER = "geonarrative";
-//	   static final String PASS = "JK93!2CFs^^53xa"; ////change
+//	   static final String USER = "vialab";
+//	   static final String PASS = "Oshawa;Collins!"; ////change
 	
 	// JDBC driver name and database URL
 	   static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
@@ -104,6 +104,9 @@ public class Test {
 			        	
 			        	//sql = "select name,asciiname,latitude,longitude from thesis.geonames where name = '" + compound + "' or asciiname = '" + compound + "' limit 1";
 			        	sql = "select name,asciiname,latitude,longitude,population from thesis.geonames where name = '" + compound + "' or asciiname = '" + compound + "'order by population desc limit 1;";
+			        	
+			        	//vialab
+			        	//sql = "select name,asciiname,latitude,longitude,population from geonarrative.geonames where name = '" + compound + "' or asciiname = '" + compound + "'order by population desc limit 1;";
 			  	      	//order by population desc limit 1; //for highest population
 			        	rs = stmt.executeQuery(sql);
 			  	      	
