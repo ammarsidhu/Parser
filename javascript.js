@@ -248,8 +248,8 @@ function convertToHtml(){
     jQuery.get('sample.txt', function(data) {
     var string = data;
     for (var i in textArray){
-            //var stringreplace = '<a id="a' + i + '"  class="jumpanchor" style="background-color:yellow" href="#" onclick="centerOnMarker(this);">' + textArray[i] + "</a>";
-            var stringreplace = '<span id="a' + i + '"  class="jumpanchor" style="background-color:yellow" onclick="centerOnMarker(this);">' + textArray[i] + "</span>";
+            var stringreplace = '<a id="a' + i + '"  class="jumpanchor" style="background-color:yellow" href="#" onclick="centerOnMarker(this);">' + textArray[i] + "</a>";
+            //var stringreplace = '<span id="a' + i + '"  class="jumpanchor" style="background-color:yellow" onclick="centerOnMarker(this);">' + textArray[i] + "</span>";
             
             var num = textArray[i].split(' ');
             var t = num[0];
@@ -356,9 +356,9 @@ function setmarkerinvisible(pass){
 
 
 function isScrolledIntoView(elem) {
-//    if ($(elem).length == 0) {
-//        return false;
-//    }
+    if ($(elem).length == 0) {
+        return false;
+    }
     var docViewTop = $('#inputtext').scrollTop();
     var docViewBottom = docViewTop + $('#inputtext').height();
 
@@ -366,7 +366,7 @@ function isScrolledIntoView(elem) {
     //var elemTop = $(elem).getBoundingClientRect().top
     var elemBottom = elemTop + $(elem).height();
         
-    //return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop)); //try it, will only work for text
+    //return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop)); 
     return (docViewBottom >= elemTop && docViewTop <= elemBottom);
 }
 
@@ -400,7 +400,41 @@ jQuery(function($) {
         });
     })
 });
-  
 
-		
+jQuery(function($) {
+    $('#showlinescheckbox').click(function () {
+
+
+        if ($('#showlinescheckbox').prop('checked')) {
+            showline();
+        } else {
+            removeline();
+        }
+    });
+});	
+
+jQuery(function($) {
+    $('#showmarkerscheckbox').click(function () {
+
+
+        if ($('#showmarkerscheckbox').prop('checked')) {
+            restoremarkers();
+        } else {
+            removemarkers();
+        }
+    });
+});	
+
+jQuery(function($) {
+    $('#showsubsetcheckbox').click(function () {
+
+
+        if ($('#showsubsetcheckbox').prop('checked')) {
+            showsubsetoflines(clickindex);
+        } else {
+            showline();
+        }
+    });
+});	
+
 google.maps.event.addDomListener(window, 'load', initialise);

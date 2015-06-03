@@ -29,18 +29,16 @@
         }
 	</style>
     <script src="https://maps.googleapis.com/maps/api/js?"></script>
-    <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
     <script src = "javascript.js"></script>
   </head>
   <body>
     <div id="map-canvas" style= float:left; position:fixed;></div>
       <div  id = "content"> <pre id="inputtext" ></pre></div>
     <div id="panel">
-        <input onclick="javascript:removeline();" type=button value="Remove line">
-        <input onclick="javascript:showline();" type=button value="Restore line">
-        <input onclick="javascript:showsubsetoflines(clickindex);" type=button value="Show Subset">
-        <input onclick="javascript:removemarkers();" type=button value="Remove Markers">
-        <input onclick="javascript:restoremarkers();" type=button value="Restore Markers">
+        <input type="checkbox" checked id="showlinescheckbox">Show Lines</input>
+        <input type="checkbox" checked id="showmarkerscheckbox">Show Markers</input>
+        <input type="checkbox" checked id="showsubsetcheckbox">Show subset of Lines</input>
         
     </div>
      
