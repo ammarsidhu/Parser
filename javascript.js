@@ -56,6 +56,7 @@ function getdata(){
         data = data1;
     });	
     $.ajaxSetup( { "async": true } );
+    
 }
 
 
@@ -67,9 +68,11 @@ function testgeo(){
         }  
     }
     
+    
     $.when.apply($, deferstack).done(function() {
                 moreAddresses();
                 //updategeonamesarray();
+            console.table(data);
     });
 }
 
@@ -114,6 +117,7 @@ function geocode(index, data1){
                 deferred.resolve();
             }else {
                 alert("Geocode failed: " + status);
+                deferred.resolve();
             }
         })
     });
@@ -133,6 +137,7 @@ function updategeonamesarray(){
 }
 	
 function moreAddresses() {
+    
         for (var i in data) {
             if (data[i].city in cityToMarkersArray){
                 addExisting(data[i],i);
@@ -149,9 +154,7 @@ function moreAddresses() {
             }
         }
     convertToHtml();
-    console.table(idNametoArray);
-    console.table(cityToMarkersArray);
-    
+    console.table(pathlineArray);
 }
     
 
@@ -186,7 +189,8 @@ function addMarker(data, location){
             }
         });
     textToMarkersArray[data.text] = markers.length;
-    idNametoArray["a" + (markers.length) ] = markers.length;
+    //idNametoArray["a" + (markers.length) ] = markers.length;
+    idNametoArray["a" + (textArray.length) ] = markers.length;
     markers.push(marker);
     textArray.push(data.text);
     addLine(location);
@@ -244,8 +248,8 @@ function convertToHtml(){
     jQuery.get('sample.txt', function(data) {
     var string = data;
     for (var i in textArray){
-            //var stringreplace = '<a id="a' + i + '"  style="background-color:yellow" href="#" onclick="centerOnMarker(this);">' + textArray[i] + "</a>";
-            var stringreplace = '<a id="a' + i + '"  class="jumpanchor" style="background-color:yellow" href="#" onclick="centerOnMarker(this);">' + textArray[i] + "</a>";
+            //var stringreplace = '<a id="a' + i + '"  class="jumpanchor" style="background-color:yellow" href="#" onclick="centerOnMarker(this);">' + textArray[i] + "</a>";
+            var stringreplace = '<span id="a' + i + '"  class="jumpanchor" style="background-color:yellow" onclick="centerOnMarker(this);">' + textArray[i] + "</span>";
             
             var num = textArray[i].split(' ');
             var t = num[0];
@@ -264,7 +268,8 @@ function convertToHtml(){
 
 function centerOnMarker(pass){
     
-    var index = textToMarkersArray[pass.text];
+//    var index = textToMarkersArray[pass.text];
+    var index = textToMarkersArray[pass.innerHTML];
     p = pass.id;
     var idnum = p.slice(1);
     markers[index].setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
@@ -332,28 +337,28 @@ function restoremarkers(){
 function setmarkervisible(pass){
     var index = idNametoArray[pass.id];
     if(index == undefined){
-        //console.log("on undefined id:" + pass.id)
+        console.log("on undefined id:" + pass.id)
     }else{
         markers[index].setMap(map);
-        pathlineArray[index].setMap(map);
+        pathlineArray[pass.id.slice(1)].setMap(map);
     }
 }
 
 function setmarkerinvisible(pass){
     var index = idNametoArray[pass.id];
    if(index == undefined){
-        //console.log("off undefined id:" + pass.id)
+        console.log("off undefined id:" + pass.id)
     }else{
         markers[index].setMap(null);
-        pathlineArray[index].setMap(null);
+        pathlineArray[pass.id.slice(1)].setMap(null);
     }
 }
 
 
 function isScrolledIntoView(elem) {
-    if ($(elem).length == 0) {
-        return false;
-    }
+//    if ($(elem).length == 0) {
+//        return false;
+//    }
     var docViewTop = $('#inputtext').scrollTop();
     var docViewBottom = docViewTop + $('#inputtext').height();
 
