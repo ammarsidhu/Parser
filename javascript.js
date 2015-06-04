@@ -10,7 +10,7 @@ var geonamesdatabasearray = [];
 var nogeoarray = [];
 var cityToMarkersArray = {};    //convert city name to marker array index
 var textToMarkersArray = {};    //convert text name to marker array index
-var idNametoArray = {};         //convert html anchor to marker array index
+var idNametoMarkerArray = {};         //convert html anchor to marker array index
 var data;                       //hold json data
 var lastposition;               //last position for lines
 var subsetflag = false;         //flag for subset of lines
@@ -200,8 +200,8 @@ function addMarker(data, location){
 //            panorama.setVisible(true);
         });
     textToMarkersArray[data.text] = markers.length;
-    //idNametoArray["a" + (markers.length) ] = markers.length;
-    idNametoArray["a" + (textArray.length) ] = markers.length;
+    //idNametoMarkerArray["a" + (markers.length) ] = markers.length;
+    idNametoMarkerArray["a" + (textArray.length) ] = markers.length;
     markers.push(marker);
     textArray.push(data.text);
     addLine(location);
@@ -221,7 +221,7 @@ function addExisting(data){
     
     textToMarkersArray[data.text] = index;
     textArray.push(data.text);
-    idNametoArray["a" + (textArray.length - 1) ] = index;
+    idNametoMarkerArray["a" + (textArray.length - 1) ] = index;
     addLine(location);
 }
 		
@@ -346,7 +346,7 @@ function restoremarkers(){
 
 
 function setmarkervisible(pass){
-    var index = idNametoArray[pass.id];
+    var index = idNametoMarkerArray[pass.id];
     if(index == undefined){
         console.log("on undefined id:" + pass.id)
     }else{
@@ -356,7 +356,7 @@ function setmarkervisible(pass){
 }
 
 function setmarkerinvisible(pass){
-    var index = idNametoArray[pass.id];
+    var index = idNametoMarkerArray[pass.id];
    if(index == undefined){
         console.log("off undefined id:" + pass.id)
     }else{
@@ -396,9 +396,49 @@ function isScrolledIntoView(elem) {
 //}
 
 
-
-
 jQuery(function($) {
+    $('#scrollfiltercheckbox').click(function () {
+
+
+        if ($('#scrollfiltercheckbox').prop('checked')) {
+            scrollfilterflag = true;
+        } else {
+            scrollfilterflag = false;
+            showline();
+            restoremarkers();
+        }
+    });
+    
+    $('#showsubsetcheckbox').click(function () {
+
+
+        if ($('#showsubsetcheckbox').prop('checked')) {
+            showsubsetoflines(clickindex);
+        } else {
+            showline();
+        }
+    });
+    
+    $('#showmarkerscheckbox').click(function () {
+
+
+        if ($('#showmarkerscheckbox').prop('checked')) {
+            restoremarkers();
+        } else {
+            removemarkers();
+        }
+    });
+    
+    $('#showlinescheckbox').click(function () {
+
+
+        if ($('#showlinescheckbox').prop('checked')) {
+            showline();
+        } else {
+            removeline();
+        }
+    });
+    
     $('#content').bind('scroll', function() {
         $('.jumpanchor').each(function () {
             if(scrollfilterflag == true){
@@ -412,54 +452,25 @@ jQuery(function($) {
             }
         });
     })
-});
-
-jQuery(function($) {
-    $('#showlinescheckbox').click(function () {
-
-
-        if ($('#showlinescheckbox').prop('checked')) {
-            showline();
-        } else {
-            removeline();
-        }
-    });
-});	
-
-jQuery(function($) {
-    $('#showmarkerscheckbox').click(function () {
-
-
-        if ($('#showmarkerscheckbox').prop('checked')) {
-            restoremarkers();
-        } else {
-            removemarkers();
-        }
-    });
-});	
-
-jQuery(function($) {
-    $('#showsubsetcheckbox').click(function () {
-
-
-        if ($('#showsubsetcheckbox').prop('checked')) {
-            showsubsetoflines(clickindex);
-        } else {
-            showline();
-        }
-    });
-});	
-
-jQuery(function($) {
-    $('#scrollfiltercheckbox').click(function () {
-
-
-        if ($('#scrollfiltercheckbox').prop('checked')) {
-            scrollfilterflag = true;
-        } else {
-            scrollfilterflag = false;
-        }
-    });
 });	
 
 google.maps.event.addDomListener(window, 'load', initialise);
+
+//$(document).on("click", function(e){
+//   
+//    //$(this).remove();
+//    
+//    //e.preventDefault();
+//    // IGNORE BROWSER, DO MY OWN THING
+//    
+//    
+//    //CLICK HANDLER
+//    if ($('#scrollfiltercheckbox').prop('checked')) {
+//            scrollfilterflag = true;
+//    } else {
+//        scrollfilterflag = false;
+//        showline();
+//        restoremarkers();
+//    }
+//    
+//});
