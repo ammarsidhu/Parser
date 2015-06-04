@@ -18,6 +18,10 @@ var clickindex=0;               //last icon clicked
 var ioutside;
 var iter = 0;
 var missinggeo = true;
+var panorama;
+var directionsService;
+var scrollfilterflag = false;
+
 
 function initialise() {
     
@@ -43,6 +47,9 @@ function initialise() {
     };
     
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+    directionsService = new google.maps.DirectionsService();
+    
+    panorama = map.getStreetView();
     
     getdata();
     testgeo();
@@ -187,6 +194,10 @@ function addMarker(data, location){
             {
                 showsubsetoflines(cityToMarkersArray[data.city]);
             }
+            
+
+//            panorama.setPosition(location);
+//            panorama.setVisible(true);
         });
     textToMarkersArray[data.text] = markers.length;
     //idNametoArray["a" + (markers.length) ] = markers.length;
@@ -390,12 +401,14 @@ function isScrolledIntoView(elem) {
 jQuery(function($) {
     $('#content').bind('scroll', function() {
         $('.jumpanchor').each(function () {
-            if(isScrolledIntoView(this)){
-                //console.log(this.id);
-                setmarkervisible(this);
-            }
-            else{
-                setmarkerinvisible(this);
+            if(scrollfilterflag == true){
+                if(isScrolledIntoView(this)){
+                    //console.log(this.id);
+                    setmarkervisible(this);
+                }
+                else{
+                    setmarkerinvisible(this);
+                }
             }
         });
     })
@@ -433,6 +446,18 @@ jQuery(function($) {
             showsubsetoflines(clickindex);
         } else {
             showline();
+        }
+    });
+});	
+
+jQuery(function($) {
+    $('#scrollfiltercheckbox').click(function () {
+
+
+        if ($('#scrollfiltercheckbox').prop('checked')) {
+            scrollfilterflag = true;
+        } else {
+            scrollfilterflag = false;
         }
     });
 });	
