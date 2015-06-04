@@ -200,7 +200,6 @@ function addMarker(data, location){
 //            panorama.setVisible(true);
         });
     textToMarkersArray[data.text] = markers.length;
-    //idNametoMarkerArray["a" + (markers.length) ] = markers.length;
     idNametoMarkerArray["a" + (textArray.length) ] = markers.length;
     markers.push(marker);
     textArray.push(data.text);
@@ -220,8 +219,9 @@ function addExisting(data){
     
     
     textToMarkersArray[data.text] = index;
+    idNametoMarkerArray["a" + (textArray.length) ] = index;
     textArray.push(data.text);
-    idNametoMarkerArray["a" + (textArray.length - 1) ] = index;
+    //idNametoMarkerArray["a" + (textArray.length - 1) ] = index;
     addLine(location);
 }
 		
@@ -318,13 +318,13 @@ function showsubsetoflines(index){
     subsetflag = true;
     removeline();
     
-    for(i = index - 1; i < index + 3; i++){
+    for(i = index - 1; (i < index + 3) && (i < pathlineArray.length - 1); i++){
         if(i<0){
             i=0;
         }
-        else if (i > pathlineArray.length - 1){
-            i = pathlineArray.length - 1;
-        }
+//        else if (i > pathlineArray.length - 1){
+//            i = pathlineArray.length - 1;
+//        }
             
         pathlineArray[i].setMap(map);     
     }
@@ -443,7 +443,6 @@ jQuery(function($) {
         $('.jumpanchor').each(function () {
             if(scrollfilterflag == true){
                 if(isScrolledIntoView(this)){
-                    //console.log(this.id);
                     setmarkervisible(this);
                 }
                 else{
