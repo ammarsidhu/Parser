@@ -4,14 +4,14 @@
 var map;
 var geocoder;
 var pathlineArray = [];
-var markers = [];
+var markerArray = [];
 var textArray = [];
 var geonamesdatabasearray = [];
 var nogeoarray = [];            //array to hold cities that couldn't be geolocated
 var cityToMarkersArray = {};    //convert city name to marker array index
 var textToMarkersArray = {};    //convert text name to marker array index
-var idNametoMarkerArray = {};         //convert html anchor to marker array index
-var data;                       //hold json data
+var idNametoMarkerArray = {};   //convert html anchor id to marker array index
+var allcitydata;                //hold json data
 var lastposition;               //last position for lines
 var subsetflag = false;         //flag for subset of lines
 var clickindex=0;               //last icon clicked
@@ -48,29 +48,29 @@ function initialise() {
     
     panorama = map.getStreetView();
     
-    getdata();
-    testgeo();
+    getdatafromjson();
+    searchformissingcoords();
     
     
 }
 
-function getdata(){
+function getdatafromjson(){
     //get the data that was provided by the java program and geonames backround database.
     $.ajaxSetup( { "async": false } );
     $.getJSON('data1.json', function (data1) {
-        data = data1;
+        allcitydata = data1;
     });	
     $.ajaxSetup( { "async": true } );
     
 }
 
 
-function testgeo(){
+function searchformissingcoords(){
     // search the data array to find locations that are missing coordinate data
     var deferstack = [];
-    for (i= 0 ; i < data.length; i++ ) {
-        if (data[i].geocode === false){
-                deferstack.push(geocode(i,data[i]));
+    for (i= 0 ; i < allcitydata.length; i++ ) {
+        if (allcitydata[i].geocode === false){ //if the coordinates are missing, use google geocode service to find them
+                deferstack.push(geocode(i,allcitydata[i]));
         }  
     }
     
@@ -79,7 +79,7 @@ function testgeo(){
     $.when.apply($, deferstack).done(function() {
                 moreAddresses();
                 //updategeonamesarray();
-            console.table(data);
+            console.table(allcitydata);
     });
 }
 
@@ -89,8 +89,8 @@ function geocode(index, data1){
     return $.Deferred(function(deferred) {  // use defers as a form of promise
         var url_addr = encodeURIComponent(data1.city);
         $.getJSON('geocode.php?addr='+url_addr, function(reqdata) { // use outside php code to actually make the requests, takes some load off of the javascipt and 
-            var results = reqdata.results,                          // transfers it to the backround server
-            status = reqdata.status;
+            var results = reqdata.results;                          // transfers it to the backround server
+            var status = reqdata.status;
             if (status == google.maps.GeocoderStatus.OK) {          // if the status is ok add data to the backround arrays
                 var latitude = results[0].geometry.location.lat;
                 var longitude = results[0].geometry.location.lng;
@@ -100,7 +100,7 @@ function geocode(index, data1){
                 for (var i=0; i<results[0].address_components.length; i++) {
                     for (var b=0;b<results[0].address_components[i].types.length;b++) {
                         if (results[0].address_components[i].types[b] == "country") {
-                            //this is the object you are looking for
+                            
                             country = results[0].address_components[i].short_name;  
                             break;
                         }
@@ -116,15 +116,16 @@ function geocode(index, data1){
                 var locationdata = {name: data1.city, latitude:latitude, longitude:longitude, country:country, population:-1};
                 geonamesdatabasearray.push(locationdata);
                 
-                data[index].latitude = latitude;
-                data[index].longitude = longitude;
-                data[index].geocode = true;
+                allcitydata[index].latitude = latitude;
+                allcitydata[index].longitude = longitude;
+                allcitydata[index].geocode = true;
                 deferred.resolve(); //resolve the promise and remove it from the stack
             } else if (status === google.maps.GeocoderStatus.OVER_QUERY_LIMIT) { // if the query limit is reached (should be fixed now that the server makes the calls
-                nogeoarray.push(index);
+                
                 alert("Geocode failed: " + status);
                 deferred.resolve();
             }else {
+                nogeoarray.push(index);
                 alert("Geocode failed: " + status);
                 deferred.resolve();
             }
@@ -134,7 +135,7 @@ function geocode(index, data1){
 
 
 function updategeonamesarray(){
-    // this is the function that sends data for the backround geonames database to be updates
+    // this is the function that sends data for the backround geonames database on the server to be updated with any info gained from google geocode service
     $.ajax({
         url: 'update_geonames_database.php',
         type: 'POST',
@@ -149,23 +150,24 @@ function updategeonamesarray(){
 	
 function moreAddresses() {
 // this function runs through the final data arrays and starts to create the markers.
-for (var i in data) {
-    if (data[i].city in cityToMarkersArray){ // if the city has already had a marker made, update it with the new information
-        addExisting(data[i],i);
+for (var i in allcitydata) {
+    if (allcitydata[i].city in cityToMarkersArray){ // if the city has already had a marker made, update it with the new information
+        addExisting(allcitydata[i],i);
     }
     else{
-        if (data[i].geocode === false){ //could not find any geocode information for the location
-            alert("no geocode for:" + data[i].city);
+        if (allcitydata[i].geocode === false){ //could not find any geocode information for the location
+            alert("no geocode for:" + allcitydata[i].city);
         }
         else{ // create a new marker for the city
-            var position =  new google.maps.LatLng(data[i].latitude, data[i].longitude);   
-            addMarker(data[i],position);
+            var position =  new google.maps.LatLng(allcitydata[i].latitude, allcitydata[i].longitude);   
+            addMarker(allcitydata[i],position);
         }
 
     }
 }
     convertToHtml(); //after all the markers have been made, create the text formatting and links for the text explorer
-    //console.table(pathlineArray);
+    //createLines();
+    console.table(textArray);
     //console.table(idNametoMarkerArray);
 }
     
@@ -188,19 +190,19 @@ function addMarker(data, location){
     marker.info = new google.maps.InfoWindow({
           content: "<h3>"+ data.city + "</h3>" + string
         });
-    cityToMarkersArray[data.city] = markers.length; // map the city name to the marker array index 
+    cityToMarkersArray[data.city] = markerArray.length; // map the city name to the marker array index 
 
     // listener for the marker click function
     google.maps.event.addListener(marker, 'click', function() {
             //set all the other markers to default icon
-            for(i in markers){
-                markers[i].setIcon('http://maps.google.com/mapfiles/marker.png');
+            for(i in markerArray){
+                markerArray[i].setIcon('http://maps.google.com/mapfiles/marker.png');
             }
             marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png'); //change the clicked marker to green
             clickindex = cityToMarkersArray[data.city]; //update click index to keep track of the last clicked marker
             //close all the other infowindows
-            for(i in markers){
-                markers[i].info.close();
+            for(i in markerArray){
+                markerArray[i].info.close();
             }
             marker.info.open(map, marker); // open this infowindow
             if (subsetflag == true) //send the location data to the subset function
@@ -212,9 +214,9 @@ function addMarker(data, location){
 //            panorama.setPosition(location);
 //            panorama.setVisible(true);
         });
-    textToMarkersArray[data.text] = markers.length; //map the sentence text to the marker array index number
-    idNametoMarkerArray["a" + (textArray.length) ] = markers.length; //map the html anchor id name to the marker array index number
-    markers.push(marker); //add to markers array
+    textToMarkersArray[data.text] = markerArray.length; //map the sentence text to the marker array index number
+    idNametoMarkerArray["a" + (textArray.length) ] = markerArray.length; //map the html anchor id name to the marker array index number
+    markerArray.push(marker); //add to markerArray array
     textArray.push(data.text); //add to text array
     addLine(location); //create line on map
 
@@ -223,13 +225,13 @@ function addMarker(data, location){
 function addExisting(data){
     //this function is used to update existing markers at a location with some more sentences
     var index = cityToMarkersArray[data.city]; //get marker array index for the city
-    var content = markers[index].info.getContent(this); //get existing content
-    var location = markers[index].getPosition(); //get existing location
+    var content = markerArray[index].info.getContent(this); //get existing content
+    var location = markerArray[index].getPosition(); //get existing location
     var string = '<a href="#a' + textArray.length + '">' + data.text +  "</a>"; //create a new anchor for the new text sentence
 
     content = content + "<p>" + string +  "</p>";
     
-    markers[index].info.setContent(content);
+    markerArray[index].info.setContent(content);
     
     
     textToMarkersArray[data.text] = index; // map sentence to marker array index number
@@ -241,7 +243,7 @@ function addExisting(data){
 function addLine (position){
     var pathLatLng = [];
     //need a beggining and end to line, if its the first location use it for both
-    if (markers.length == 1){
+    if (markerArray.length == 1){
         lastposition = position;
     }
     pathLatLng.push(lastposition);
@@ -271,10 +273,12 @@ function addLine (position){
     showline();
 }
 
+
+
 function convertToHtml(){
     //function is used to create the highlighting and links in the text explorer
-    jQuery.get('sample.txt', function(data) { // load the data
-    var string = data;
+    jQuery.get('sample.txt', function(noveltext) { // load the data
+    var string = noveltext;
     for (var i in textArray){
             //create the html tag with the anchor id and the onclick function
             var stringreplace = '<a id="a' + i + '"  class="jumpanchor" style="background-color:yellow" href="#" onclick="centerOnMarker(this);">' + textArray[i] + "</a>";
@@ -286,10 +290,10 @@ function convertToHtml(){
                 t += "([\\s]*)" + num[i];
             }
             var regex = new RegExp(t);
-            data = data.replace(regex, stringreplace); //replace the old text with the new one with html tags
+            noveltext = noveltext.replace(regex, stringreplace); //replace the old text with the new one with html tags
             
         }
-        document.getElementById("inputtext").innerHTML = data; //update the html dom element with the new formatted text
+        document.getElementById("inputtext").innerHTML = noveltext; //update the html dom element with the new formatted text
     });
 }
 
@@ -297,18 +301,18 @@ function convertToHtml(){
 
 function centerOnMarker(pass){
     //this function is used to centre the map on the related marker when a sentence is clicked in the text explorer
-    var index = textToMarkersArray[pass.innerHTML]; //get the index using the text sentence
+    var index = textToMarkersArray[pass.innerHTML]; //get the marker index using the text sentence
     p = pass.id;
-    var idnum = p.slice(1);
-    markers[index].setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png'); //set the current marker to green
-    markers[clickindex].setIcon('http://maps.google.com/mapfiles/marker.png'); //set the old one to standard
+    var idnum = p.slice(1); //get the id number "a12" -> "12"
+    markerArray[index].setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png'); //set the current marker to green
+    markerArray[clickindex].setIcon('http://maps.google.com/mapfiles/marker.png'); //set the old one to standard
     //close the rest of the infowindows
-    for(i in markers){
-                markers[i].info.close();
+    for(i in markerArray){
+                markerArray[i].info.close();
     }
-    markers[index].info.open(map, markers[index]); //open the relevant infowindow
+    markerArray[index].info.open(map, markerArray[index]); //open the relevant infowindow
     //center the mao
-    var LatLng  = markers[index].getPosition();
+    var LatLng  = markerArray[index].getPosition();
     map.setCenter(LatLng);
     map.setZoom(6);
     clickindex = index;
@@ -353,15 +357,15 @@ function showsubsetoflines(index){
 
 function removemarkers(){
     // loop through and set  all the markers to invisible
-    for(i in markers){
-        markers[i].setMap(null);
+    for(i in markerArray){
+        markerArray[i].setMap(null);
     }
 }
 
 function restoremarkers(){
     // loop through and set the markers to visible
-     for(i in markers){
-        markers[i].setMap(map);
+     for(i in markerArray){
+        markerArray[i].setMap(map);
     }
 }
 
@@ -372,7 +376,7 @@ function setmarkervisible(pass){
     if(index == undefined){
         console.log("on undefined id:" + pass.id)
     }else{
-        markers[index].setMap(map);
+        markerArray[index].setMap(map);
         pathlineArray[pass.id.slice(1)].setMap(map);
     }
 }
@@ -383,7 +387,7 @@ function setmarkerinvisible(pass){
    if(index == undefined){
         console.log("off undefined id:" + pass.id)
     }else{
-        markers[index].setMap(null);
+        markerArray[index].setMap(null);
         pathlineArray[pass.id.slice(1)].setMap(null);
     }
 }
@@ -460,21 +464,3 @@ jQuery(function($) {
 
 google.maps.event.addDomListener(window, 'load', initialise);
 
-//$(document).on("click", function(e){
-//   
-//    //$(this).remove();
-//    
-//    //e.preventDefault();
-//    // IGNORE BROWSER, DO MY OWN THING
-//    
-//    
-//    //CLICK HANDLER
-//    if ($('#scrollfiltercheckbox').prop('checked')) {
-//            scrollfilterflag = true;
-//    } else {
-//        scrollfilterflag = false;
-//        showline();
-//        restoremarkers();
-//    }
-//    
-//});
