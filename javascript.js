@@ -79,7 +79,6 @@ function searchformissingcoords(){
     $.when.apply($, deferstack).done(function() {
                 moreAddresses();
                 //updategeonamesarray();
-            console.table(allcitydata);
     });
 }
 
@@ -113,7 +112,7 @@ function geocode(index, data1){
                 }
                 
                 //create a location object and store it
-                var locationdata = {name: data1.city, latitude:latitude, longitude:longitude, country:country, population:-1};
+                var locationdata = {name: data1.city, latitude:latitude, longitude:longitude, country:country, elevation:-1000000};
                 geonamesdatabasearray.push(locationdata);
                 
                 allcitydata[index].latitude = latitude;
@@ -160,21 +159,22 @@ for (var i in allcitydata) {
         }
         else{ // create a new marker for the city
             var position =  new google.maps.LatLng(allcitydata[i].latitude, allcitydata[i].longitude);   
-            addMarker(allcitydata[i],position);
+            addMarker(allcitydata[i],position,i);
         }
 
     }
 }
     convertToHtml(); //after all the markers have been made, create the text formatting and links for the text explorer
-    //createLines();
-    console.table(textArray);
-    //console.table(idNametoMarkerArray);
+    createLines();
+    console.table(ttomark);
 }
     
 
 		
-function addMarker(data, location){
+function addMarker(data, location, allcitydataindex){
     // this function is used to create new markers for a location or city.
+    
+    allcitydata[allcitydataindex].googlelocation = location; // add the google location object to allcitydata array
     
     //create the marker
     var marker = new google.maps.Marker({
@@ -214,19 +214,31 @@ function addMarker(data, location){
 //            panorama.setPosition(location);
 //            panorama.setVisible(true);
         });
-    textToMarkersArray[data.text] = markerArray.length; //map the sentence text to the marker array index number
+    
+    var indarray = [];
+    if (data.text in textToMarkersArray){   //if the sentence contains more than one location
+        textToMarkersArray[data.text].push(markerArray.length); //map the marker index to the text sentence
+    }
+    else{
+        indarray.push(markerArray.length);
+        textToMarkersArray[data.text] = indarray; //map the marker index to the text sentence
+    }
+    
+    
+    
     idNametoMarkerArray["a" + (textArray.length) ] = markerArray.length; //map the html anchor id name to the marker array index number
     markerArray.push(marker); //add to markerArray array
     textArray.push(data.text); //add to text array
-    addLine(location); //create line on map
+    
 
 }
 		
-function addExisting(data){
+function addExisting(data, allcitydataindex){
     //this function is used to update existing markers at a location with some more sentences
     var index = cityToMarkersArray[data.city]; //get marker array index for the city
     var content = markerArray[index].info.getContent(this); //get existing content
     var location = markerArray[index].getPosition(); //get existing location
+    allcitydata[allcitydataindex].googlelocation = location;
     var string = '<a href="#a' + textArray.length + '">' + data.text +  "</a>"; //create a new anchor for the new text sentence
 
     content = content + "<p>" + string +  "</p>";
@@ -234,20 +246,47 @@ function addExisting(data){
     markerArray[index].info.setContent(content);
     
     
-    textToMarkersArray[data.text] = index; // map sentence to marker array index number
+    var indarray = [];
+    if (data.text in textToMarkersArray){   //if the sentence contains more than one location
+        textToMarkersArray[data.text].push(markerArray.length); //map the marker index to the text sentence
+    }
+    else{
+        indarray.push(markerArray.length);
+        textToMarkersArray[data.text] = indarray; //map the marker index to the text sentence
+    }
+    
     idNametoMarkerArray["a" + (textArray.length) ] = index; //map id name to marker array index number
     textArray.push(data.text);
-    addLine(location);
+    
 }
-		
-function addLine (position){
+
+function createLines(){
+    var firstindex;
+    for (var i in allcitydata){
+        if(allcitydata[i].geocode){
+            firstindex = i;
+            break;
+        }
+    }
+    
+    var start = markerArray[firstindex].getPosition();
+    var end;
+    for (var i in allcitydata){
+        if (allcitydata[i].geocode){
+            end = allcitydata[i].googlelocation;
+            addLine(start,end);
+            start = end;
+        }
+    }
+    showline();
+}
+
+function addLine (startPosition, endPosition){
     var pathLatLng = [];
     //need a beggining and end to line, if its the first location use it for both
-    if (markerArray.length == 1){
-        lastposition = position;
-    }
-    pathLatLng.push(lastposition);
-    pathLatLng.push(position);
+    
+    pathLatLng.push(startPosition);
+    pathLatLng.push(endPosition);
     
     //choose the type of line or arrow
     var lineSymbol = {
@@ -269,11 +308,8 @@ function addLine (position){
 
     
     pathlineArray.push(pathline);
-    lastposition = position;
-    showline();
 }
-
-
+		
 
 function convertToHtml(){
     //function is used to create the highlighting and links in the text explorer
@@ -301,16 +337,21 @@ function convertToHtml(){
 
 function centerOnMarker(pass){
     //this function is used to centre the map on the related marker when a sentence is clicked in the text explorer
-    var index = textToMarkersArray[pass.innerHTML]; //get the marker index using the text sentence
+    //var index = textToMarkersArray[pass.innerHTML]; //get the marker index using the text sentence
     p = pass.id;
     var idnum = p.slice(1); //get the id number "a12" -> "12"
-    markerArray[index].setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png'); //set the current marker to green
-    markerArray[clickindex].setIcon('http://maps.google.com/mapfiles/marker.png'); //set the old one to standard
+    
     //close the rest of the infowindows
     for(i in markerArray){
-                markerArray[i].info.close();
+        markerArray[i].info.close();
+        markerArray[i].setIcon('http://maps.google.com/mapfiles/marker.png'); //set the old one to standard
     }
-    markerArray[index].info.open(map, markerArray[index]); //open the relevant infowindow
+    
+    var test = textToMarkersArray[pass.innerHTML];
+    for (var i in test){
+         markerArray[test[i]].info.open(map, markerArray[test[i]]); //open the relevant infowindow
+         markerArray[test[i]].setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png'); //set the current marker to green
+    }
     //center the mao
     var LatLng  = markerArray[index].getPosition();
     map.setCenter(LatLng);
@@ -319,7 +360,6 @@ function centerOnMarker(pass){
     if (subsetflag == true)
     {
         showsubsetoflines(parseInt(idnum));
-        
     }
 }
 
