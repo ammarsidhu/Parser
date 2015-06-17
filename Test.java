@@ -87,7 +87,7 @@ public class Test {
 	        	testwriter.println(test);
 	        	wordclass = word.get(CoreAnnotations.AnswerAnnotation.class);
 	        	if (wordclass.equals("LOCATION") || word.word().equals(",") || wordclass.equals("PERSON")){
-	        		if (compound == null && (wordclass.equals("LOCATION")|| wordclass.equals("PERSON"))){
+	        		if (compound == null && (wordclass.equals("LOCATION"))){
 	        			compound = word.word();
 	        			wordclass2 = word.get(CoreAnnotations.AnswerAnnotation.class);
 	        			lastApostrohy = false;
@@ -99,6 +99,7 @@ public class Test {
 	        		else if(compound != null && wordclass.equals("LOCATION")){
 	        				compound = compound + " " + word.word();
 	        				lastApostrohy = false;
+	        				wordclass2 = word.get(CoreAnnotations.AnswerAnnotation.class);
 	        		}
 	        	}
 	        	else{

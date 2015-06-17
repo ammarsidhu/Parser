@@ -1,21 +1,427 @@
-<LOCATION>Hamilton, Ontario</LOCATION>
+<LOCATION>Northern States</LOCATION>
 
-sentence: April 14, 2014 Hamilton, Ontario.
+sentence: Since my return to liberty, I have not failed to perceive the increasing interest throughout the Northern States, in regard to the subject of Slavery.
 
 ID# : 0
 
 
-<PERSON>Hamilton, Ontario</PERSON>
+Latitude: 39.470989
+Longitude: -80.2888748
 
-sentence: April 8, 2014 Hamilton, Ontario.
+
+<LOCATION>Rhode Island</LOCATION>
+
+sentence: As far back as I have been able to ascertain, my ancestors on the paternal side were slaves in Rhode Island.
 
 ID# : 1
 
 
-<PERSON>Woodbridge, Ontario</PERSON>
+Latitude: 41.5800945
+Longitude: -71.4774291
 
-sentence: March 27, 2015 Woodbridge, Ontario.
+
+<LOCATION>Hoosic</LOCATION>
+
+sentence: They belonged to a family by the name of Northup, one of whom, removing to the State of New-York, settled at Hoosic, in Rensselaer county.
 
 ID# : 2
+
+
+Latitude: 42.19769
+Longitude: -71.13389
+
+
+<LOCATION>Rensselaer county</LOCATION>
+
+sentence: They belonged to a family by the name of Northup, one of whom, removing to the State of New-York, settled at Hoosic, in Rensselaer county.
+
+ID# : 3
+
+
+Latitude: 42.673664
+Longitude: -73.5594128
+
+
+<LOCATION>Esq.</LOCATION>
+
+sentence: Henry B. Northup, Esq., of Sandy Hill, a distinguished counselor at law, and the man to whom, under Providence, I am indebted for my present liberty, and my return to the society of my wife and children, is a relative of the family in which my forefathers were thus held to service, and from which they took the name I bear.
+
+ID# : 4
+
+
+Latitude: -6.9420825
+Longitude: 107.6590297
+
+
+<LOCATION>Providence</LOCATION>
+
+sentence: Henry B. Northup, Esq., of Sandy Hill, a distinguished counselor at law, and the man to whom, under Providence, I am indebted for my present liberty, and my return to the society of my wife and children, is a relative of the family in which my forefathers were thus held to service, and from which they took the name I bear.
+
+ID# : 5
+
+
+Latitude: 41.82399
+Longitude: -71.41283
+
+
+<LOCATION>Minerva, Essex county,</LOCATION>
+
+sentence: Sometime after my father's liberation, he removed to the town of Minerva, Essex county, N. Y., where I was born, in the month of July, 1808.
+
+ID# : 6
+
+
+<LOCATION>Granville, Washington county</LOCATION>
+
+sentence: From thence he removed to Granville, Washington county, near a place known as Slyborough, where, for some years, he labored on the farm of Clark Northup, also a relative of his old master; from thence he removed to the Alden farm, at Moss Street, a short distance north of the village of Sandy Hill; and from thence to the farm now owned by Russel Pratt, situated on the road leading from Fort Edward to Argyle, where he continued to reside until his death, which took place on the 22d day of November, 1829.
+
+ID# : 7
+
+
+<LOCATION>Moss Street</LOCATION>
+
+sentence: From thence he removed to Granville, Washington county, near a place known as Slyborough, where, for some years, he labored on the farm of Clark Northup, also a relative of his old master; from thence he removed to the Alden farm, at Moss Street, a short distance north of the village of Sandy Hill; and from thence to the farm now owned by Russel Pratt, situated on the road leading from Fort Edward to Argyle, where he continued to reside until his death, which took place on the 22d day of November, 1829.
+
+ID# : 8
+
+
+Latitude: 43.3218516
+Longitude: -73.5715735
+
+
+<LOCATION>Sandy Hill</LOCATION>
+
+sentence: From thence he removed to Granville, Washington county, near a place known as Slyborough, where, for some years, he labored on the farm of Clark Northup, also a relative of his old master; from thence he removed to the Alden farm, at Moss Street, a short distance north of the village of Sandy Hill; and from thence to the farm now owned by Russel Pratt, situated on the road leading from Fort Edward to Argyle, where he continued to reside until his death, which took place on the 22d day of November, 1829.
+
+ID# : 9
+
+
+Latitude: 29.7997542
+Longitude: -98.4911575
+
+
+<LOCATION>Fort Edward</LOCATION>
+
+sentence: From thence he removed to Granville, Washington county, near a place known as Slyborough, where, for some years, he labored on the farm of Clark Northup, also a relative of his old master; from thence he removed to the Alden farm, at Moss Street, a short distance north of the village of Sandy Hill; and from thence to the farm now owned by Russel Pratt, situated on the road leading from Fort Edward to Argyle, where he continued to reside until his death, which took place on the 22d day of November, 1829.
+
+ID# : 10
+
+
+Latitude: 43.2670175
+Longitude: -73.5845597
+
+
+<LOCATION>Oswego</LOCATION>
+
+sentence: The latter is still living in the county of Oswego, near the city of that name; my mother died during the period of my captivity.
+
+ID# : 11
+
+
+Latitude: 41.68281
+Longitude: -88.35146
+
+
+<LOCATION>Africa</LOCATION>
+
+sentence: His whole life was passed in the peaceful pursuits of agriculture, never seeking employment in those more menial positions, which seem to be especially allotted to the children of Africa.
+
+ID# : 12
+
+
+Latitude: -8.783195
+Longitude: 34.508523
+
+
+<LOCATION>Louisiana</LOCATION>
+
+sentence: How often since that time has the recollection of his paternal counsels occurred to me, while lying in a slave hut in the distant and sickly regions of Louisiana, smarting with the undeserved wounds which an inhuman master had inflicted, and longing only for the grave which had covered him, to shield me also from the lash of the oppressor.
+
+ID# : 13
+
+
+Latitude: 30.9842977
+Longitude: -91.9623327
+
+
+<LOCATION>Fort Edward</LOCATION>
+
+sentence: The ceremony was performed at Fort Edward, by Timothy Eddy, Esq., a magistrate of that town, and still a prominent citizen of the place.
+
+ID# : 14
+
+
+Latitude: 43.2670175
+Longitude: -73.5845597
+
+
+<LOCATION>Esq.</LOCATION>
+
+sentence: The ceremony was performed at Fort Edward, by Timothy Eddy, Esq., a magistrate of that town, and still a prominent citizen of the place.
+
+ID# : 15
+
+
+Latitude: -6.9420825
+Longitude: 107.6590297
+
+
+<LOCATION>Salem</LOCATION>
+
+sentence: She had resided a long time at Sandy Hill, with Mr. Baird, proprietor of the Eagle Tavern, and also in the family of Rev. Alexander Proudfit, of Salem.
+
+ID# : 16
+
+
+Latitude: 11.65
+Longitude: 78.16667
+
+
+<LOCATION>Fort Edward</LOCATION>
+
+sentence: Immediately upon our marriage we commenced house-keeping, in the old yellow building then standing at the southern extremity of Fort Edward village, and which has since been transformed into a modern mansion, and lately occupied by Captain Lathrop.
+
+ID# : 17
+
+
+Latitude: 43.2670175
+Longitude: -73.5845597
+
+
+<LOCATION>Fort House</LOCATION>
+
+sentence: It is known as the Fort House.
+
+ID# : 18
+
+
+<LOCATION>Fort</LOCATION>
+
+sentence: It was also occupied by Burgoyne in 1777, being situated near the old Fort on the left bank of the Hudson.
+
+ID# : 19
+
+
+Latitude: 18.9352599
+Longitude: 72.8371511
+
+
+<LOCATION>Hudson</LOCATION>
+
+sentence: It was also occupied by Burgoyne in 1777, being situated near the old Fort on the left bank of the Hudson.
+
+ID# : 20
+
+
+Latitude: 41.24006
+Longitude: -81.44067
+
+
+<LOCATION>Champlain Canal</LOCATION>
+
+sentence: During the winter I was employed with others repairing the Champlain Canal, on that section over which William Van Nortwick was superintendent.
+
+ID# : 21
+
+
+Latitude: 43.1736961
+Longitude: -73.5794724
+
+
+<LOCATION>Lake Champlain</LOCATION>
+
+sentence: Having hired several efficient hands to assist me, I entered into contracts for the transportation of large rafts of timber from Lake Champlain to Troy.
+
+ID# : 22
+
+
+Latitude: 44.586581
+Longitude: -73.3800905
+
+
+<LOCATION>Bayou Boeuf</LOCATION>
+
+sentence: During the season I became perfectly familiar with the art and mysteries of rafting-- a knowledge which afterwards enabled me to render profitable service to a worthy master, and to astonish the simple-witted lumbermen on the banks of the Bayou Boeuf.
+
+ID# : 23
+
+
+<LOCATION>Lake Champlain</LOCATION>
+
+sentence: In one of my voyages down Lake Champlain, I was induced to make a visit to Canada.
+
+ID# : 24
+
+
+Latitude: 44.586581
+Longitude: -73.3800905
+
+
+<LOCATION>Canada</LOCATION>
+
+sentence: In one of my voyages down Lake Champlain, I was induced to make a visit to Canada.
+
+ID# : 25
+
+
+Latitude: 56.130366
+Longitude: -106.346771
+
+
+<LOCATION>Montreal</LOCATION>
+
+sentence: Repairing to Montreal, I visited the cathedral and other places of interest in that city, from whence I continued my excursion to Kingston and other towns, obtaining a knowledge of localities, which was also of service to me afterwards, as will appear towards the close of this narrative.
+
+ID# : 26
+
+
+Latitude: 45.50884
+Longitude: -73.58781
+
+
+<LOCATION>Kingston</LOCATION>
+
+sentence: Repairing to Montreal, I visited the cathedral and other places of interest in that city, from whence I continued my excursion to Kingston and other towns, obtaining a knowledge of localities, which was also of service to me afterwards, as will appear towards the close of this narrative.
+
+ID# : 27
+
+
+Latitude: 17.99702
+Longitude: -76.79358
+
+
+<LOCATION>Hartford</LOCATION>
+
+sentence: With one cow, one swine, a yoke of fine oxen I had lately purchased of Lewis Brown, in Hartford, and other personal property and effects, we proceeded to our new home in Kingsbury.
+
+ID# : 28
+
+
+Latitude: 41.76371
+Longitude: -72.68509
+
+
+<LOCATION>Saratoga Springs</LOCATION>
+
+sentence: In March, 1834, we removed to Saratoga Springs.
+
+ID# : 29
+
+
+Latitude: 43.08313
+Longitude: -73.78457
+
+
+<LOCATION>Washington</LOCATION>
+
+sentence: We occupied a house belonging to Daniel O'Brien, on the north side of Washington street.
+
+ID# : 30
+
+
+Latitude: 54.9
+Longitude: -1.51667
+
+
+<LOCATION>Washington Hall</LOCATION>
+
+sentence: At that time Isaac Taylor kept a large boarding house, known as Washington Hall, at the north end of Broadway.
+
+ID# : 31
+
+
+<LOCATION>Broadway</LOCATION>
+
+sentence: At that time Isaac Taylor kept a large boarding house, known as Washington Hall, at the north end of Broadway.
+
+ID# : 32
+
+
+Latitude: 40.790885
+Longitude: -73.9747115
+
+
+<LOCATION>United States Hotel</LOCATION>
+
+sentence: After this time I was generally employed through the visiting season, as also was Anne, in the United States Hotel, and other public houses of the place.
+
+ID# : 33
+
+
+Latitude: 33.0132526
+Longitude: -79.9775502
+
+
+<LOCATION>Saratoga railroad</LOCATION>
+
+sentence: In winter seasons I relied upon my violin, though during the construction of the Troy and Saratoga railroad, I performed many hard days' labor upon it.
+
+ID# : 34
+
+
+<LOCATION>Saratoga</LOCATION>
+
+sentence: I was in the habit, at Saratoga, of purchasing articles necessary for my family at the stores of Mr. Cephas Parker and Mr. William Perry, gentlemen towards whom, for many acts of kindness, I entertained feelings of strong regard.
+
+ID# : 35
+
+
+Latitude: 37.26383
+Longitude: -122.02301
+
+
+<LOCATION>United States Hotel</LOCATION>
+
+sentence: While living at the United States Hotel, I frequently met with slaves, who had accompanied their masters from the South.
+
+ID# : 36
+
+
+Latitude: 33.0132526
+Longitude: -79.9775502
+
+
+<LOCATION>South</LOCATION>
+
+sentence: While living at the United States Hotel, I frequently met with slaves, who had accompanied their masters from the South.
+
+ID# : 37
+
+
+Latitude: 44.4669941
+Longitude: -73.1709604
+
+
+<LOCATION>Saratoga</LOCATION>
+
+sentence: I continued to reside at Saratoga until the spring of 1841.
+
+ID# : 38
+
+
+Latitude: 37.26383
+Longitude: -122.02301
+
+
+<LOCATION>Hudson</LOCATION>
+
+sentence: The flattering anticipations which, seven years before, had seduced us from the quiet farm-house, on the east side of the Hudson, had not been realized.
+
+ID# : 39
+
+
+Latitude: 41.24006
+Longitude: -81.44067
+
+
+<LOCATION>Saratoga</LOCATION>
+
+sentence: When not at labor I was always walking with them, clad in their best attire, through the streets and groves of Saratoga.
+
+ID# : 40
+
+
+Latitude: 37.26383
+Longitude: -122.02301
 
 

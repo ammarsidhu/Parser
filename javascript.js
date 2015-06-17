@@ -11,6 +11,8 @@ var nogeoarray = [];            //array to hold cities that couldn't be geolocat
 var cityToMarkersArray = {};    //convert city name to marker array index
 var textToMarkersArray = {};    //convert text name to marker array index
 var idNametoMarkerArray = {};   //convert html anchor id to marker array index
+var idNametoLineArray = {};
+var lineArrayIndex = 0;
 var allcitydata;                //hold json data
 var lastposition;               //last position for lines
 var subsetflag = false;         //flag for subset of lines
@@ -168,7 +170,9 @@ for (var i in allcitydata) {
     createLines();
     console.table(textArray);
     console.table(textToMarkersArray);
-    console.table(markerArray);
+    console.table(idNametoMarkerArray);
+    console.table(idNametoLineArray);
+    console.log(markerArray.length);
 }
     
 
@@ -245,15 +249,20 @@ function addMarker(data, location, allcitydataindex){
     //textArray.push(data.text); //add to text array
     
    
-    
+    var idindarray= [];
+    var idindarray2 = [];
     if (textArray.indexOf(data.text) > -1){
-        idNametoMarkerArray["a" + textArray.indexOf(data.text) ] = markerArray.length;
+        idNametoMarkerArray["a" + textArray.indexOf(data.text) ].push(markerArray.length);
+        idNametoLineArray["a" + textArray.indexOf(data.text) ].push(lineArrayIndex);
     }else{
-        idNametoMarkerArray["a" + (textArray.length) ] = markerArray.length;
+        idindarray.push(markerArray.length);
+        idindarray2.push(lineArrayIndex);
+        idNametoMarkerArray["a" + (textArray.length) ] = idindarray;
+        idNametoLineArray["a" + (textArray.length) ] = idindarray2;
         textArray.push(data.text);
     }
     markerArray.push(marker); //add to markerArray array
-
+    lineArrayIndex++;
 }
 		
 function addExisting(data, allcitydataindex){
@@ -293,14 +302,29 @@ function addExisting(data, allcitydataindex){
     
     //textArray.push(data.text);
     
+//    if (textArray.indexOf(data.text) > -1){
+//        idNametoMarkerArray["a" + textArray.indexOf(data.text) ] = index;
+//    }else{
+//        idNametoMarkerArray["a" + (textArray.length) ] = index;
+//        textArray.push(data.text);
+//    }
+    
+     var idindarray= [];
+    var idindarray2 = [];
     if (textArray.indexOf(data.text) > -1){
-        idNametoMarkerArray["a" + textArray.indexOf(data.text) ] = index;
+        idNametoMarkerArray["a" + textArray.indexOf(data.text) ].push(index);
+        idNametoLineArray["a" + textArray.indexOf(data.text) ].push(lineArrayIndex);
+        //idNametoMarkerArray["a" + textArray.indexOf(data.text) ] = markerArray.length;
     }else{
-        idNametoMarkerArray["a" + (textArray.length) ] = index;
+        //idNametoMarkerArray["a" + (textArray.length) ] = markerArray.length;
+        idindarray.push(index);
+        idindarray2.push(lineArrayIndex);
+        idNametoMarkerArray["a" + (textArray.length) ] = idindarray;
+        idNametoLineArray["a" + (textArray.length) ] = idindarray2;
         textArray.push(data.text);
     }
     
-    
+    lineArrayIndex++;
 }
 
 function createLines(){
@@ -317,14 +341,14 @@ function createLines(){
     for (var i in allcitydata){
         if (allcitydata[i].geocode){
             end = allcitydata[i].googlelocation;
-            addLine(start,end);
+            addLine(start,end,i);
             start = end;
         }
     }
     showline();
 }
 
-function addLine (startPosition, endPosition){
+function addLine (startPosition, endPosition, allcitydataindex){
     var pathLatLng = [];
     //need a beggining and end to line, if its the first location use it for both
     
@@ -455,33 +479,37 @@ function restoremarkers(){
 
 function setmarkervisible(pass){
     // set an individual marker to visible, used for the scroll filter function
-    //var index = idNametoMarkerArray[pass.id];
-    var markerIndexes = textToMarkersArray[pass.innerHTML];
-    var test;
+    var markerIndexes = idNametoMarkerArray[pass.id];
+    var lineIndexes = idNametoLineArray[pass.id];
     if(markerIndexes == undefined){
         console.log("on undefined id:" + pass.id)
     }else{
         for (var i in markerIndexes){
             markerArray[markerIndexes[i]].setMap(map);
-            test += " " + markerIndexes[i];
         }
-        //markerArray[index].setMap(map);
-        pathlineArray[pass.id.slice(1)].setMap(map);
+        for (var i in lineIndexes){
+            pathlineArray[lineIndexes[i]].setMap(map);
+        }
+        
     }
+    console.log("id name: " + pass.id + " marker id: " + markerIndexes[0]);
 }
 
 
 
 function setmarkerinvisible(pass){
     // set an individual marker to invisible, used for the scroll filter function
-     var markerIndexes = textToMarkersArray[pass.innerHTML];
+    var markerIndexes = idNametoMarkerArray[pass.id];
+    var lineIndexes = idNametoLineArray[pass.id];
    if(markerIndexes == undefined){
         console.log("off undefined id:" + pass.id)
     }else{
         for (var i in markerIndexes){
             markerArray[markerIndexes[i]].setMap(null);
         }
-        pathlineArray[pass.id.slice(1)].setMap(null);
+        for (var i in lineIndexes){
+            pathlineArray[lineIndexes[i]].setMap(null);
+        }
     }
 }
 
