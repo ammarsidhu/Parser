@@ -39,6 +39,7 @@ public class Test {
 		String serializedClassifier = "classifiers/english.all.3class.distsim.crf.ser.gz";
 	    FileWriter file = new FileWriter("data1.json");
 	    PrintWriter writer = new PrintWriter("output.txt");
+	    PrintWriter testwriter = new PrintWriter("testwriter.txt");
 
 	    AbstractSequenceClassifier<CoreLabel> classifier = CRFClassifier.getClassifier(serializedClassifier);
 	    
@@ -67,36 +68,51 @@ public class Test {
 	      out = classifier.classifyFile(args[0]);
 	      String compound = null;
 	      String wordclass = null;
+	      String wordclass2 = null;
 	      double latitude = 0;
 	      double longitude = 0;
 	      String sql;
 	      ResultSet rs= null;
-	      boolean foundRows = false; 
+	      boolean foundRows = false;
+	      boolean lastApostrohy = true;
 	      
 	      JSONArray list = new JSONArray();
 	      int counter = 0;
+	      String test;
       	
 	      
 	      for (List<CoreLabel> sentence : out) {
 	        for (CoreLabel word : sentence) {
-	        	if (word.get(CoreAnnotations.AnswerAnnotation.class).contentEquals("LOCATION") /*||word.get(CoreAnnotations.AnswerAnnotation.class).contentEquals("PERSON")*/){
-	        		if (compound == null){
+	        	test = "(word: " + word + " class: " + word.get(CoreAnnotations.AnswerAnnotation.class) + ")"; 
+	        	testwriter.println(test);
+	        	wordclass = word.get(CoreAnnotations.AnswerAnnotation.class);
+	        	if (wordclass.equals("LOCATION") || word.word().equals(",") || wordclass.equals("PERSON")){
+	        		if (compound == null && (wordclass.equals("LOCATION")|| wordclass.equals("PERSON"))){
 	        			compound = word.word();
-	        			wordclass = word.get(CoreAnnotations.AnswerAnnotation.class);
+	        			wordclass2 = word.get(CoreAnnotations.AnswerAnnotation.class);
+	        			lastApostrohy = false;
 	        		}
-	        		else{
-	        			compound = compound + " " + word.word();
+	        		else if(compound != null && word.word().equals(",")){
+	        				compound = compound + word.word();
+	        				lastApostrohy = true;
+	        		}
+	        		else if(compound != null && wordclass.equals("LOCATION")){
+	        				compound = compound + " " + word.word();
+	        				lastApostrohy = false;
 	        		}
 	        	}
 	        	else{
 	        		if(compound != null){
+	        			if (lastApostrohy)
+	        				compound = compound.substring(0, compound.length()-1);
+	        			
 	        			String sentence1 = StringUtils.join(sentence, " ");
 	        			String sentence2 = sentence1.replaceAll("\\s+(?=\\p{Punct})", "");
-			        	System.out.print('<' + wordclass + '>' + compound + "</" + wordclass + ">\n");
+			        	System.out.print('<' + wordclass2 + '>' + compound + "</" + wordclass2 + ">\n");
 			        	System.out.print("sentence: " + sentence2 + "\n");
 			        	System.out.print("ID# : " + counter + "\n\n");
 			        	
-			        	writer.println('<' + wordclass + '>' + compound + "</" + wordclass + ">\n");
+			        	writer.println('<' + wordclass2 + '>' + compound + "</" + wordclass2 + ">\n");
 			        	writer.println("sentence: " + sentence2 + "\n");
 			        	writer.println("ID# : " + counter + "\n\n");
 			        	counter++;
@@ -146,6 +162,7 @@ public class Test {
 	      file.flush();
 	      file.close();
 	      writer.close();
+	      testwriter.close();
 	      rs.close();
 	      try{
 	          if(stmt!=null)

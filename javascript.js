@@ -166,7 +166,9 @@ for (var i in allcitydata) {
 }
     convertToHtml(); //after all the markers have been made, create the text formatting and links for the text explorer
     createLines();
-    console.table(ttomark);
+    console.table(textArray);
+    console.table(textToMarkersArray);
+    console.table(markerArray);
 }
     
 
@@ -184,8 +186,19 @@ function addMarker(data, location, allcitydataindex){
     });	
     
     marker.setIcon('http://maps.google.com/mapfiles/marker.png');
-    var string = '<a href="#a' + textArray.length + '">' + data.text +  "</a>"; // set anchor tags around the sentence containing the location name so it can be linked
-                                                                                // to the text explorer
+//    var string = '<a href="#a' + textArray.length + '">' + data.text +  "</a>"; // set anchor tags around the sentence containing the location name so it can be linked
+//                                                                                 to the text explorer
+    
+    if (textArray.indexOf(data.text) > -1){
+        var string = '<a href="#a' + textArray.indexOf(data.text) + '">' + data.text +  "</a>";
+    }else {
+        var string = '<a href="#a' + textArray.length + '">' + data.text +  "</a>";
+    }
+    
+    
+    
+    
+    
     // create the infowindow when a marker is clicked containing the location name and text data
     marker.info = new google.maps.InfoWindow({
           content: "<h3>"+ data.city + "</h3>" + string
@@ -224,23 +237,45 @@ function addMarker(data, location, allcitydataindex){
         textToMarkersArray[data.text] = indarray; //map the marker index to the text sentence
     }
     
+    allcitydata[allcitydataindex].markerArrayIndex = markerArray.length;
     
     
-    idNametoMarkerArray["a" + (textArray.length) ] = markerArray.length; //map the html anchor id name to the marker array index number
+//    idNametoMarkerArray["a" + (textArray.length) ] = markerArray.length; //map the html anchor id name to the marker array index number
+    
+    //textArray.push(data.text); //add to text array
+    
+   
+    
+    if (textArray.indexOf(data.text) > -1){
+        idNametoMarkerArray["a" + textArray.indexOf(data.text) ] = markerArray.length;
+    }else{
+        idNametoMarkerArray["a" + (textArray.length) ] = markerArray.length;
+        textArray.push(data.text);
+    }
     markerArray.push(marker); //add to markerArray array
-    textArray.push(data.text); //add to text array
-    
 
 }
 		
 function addExisting(data, allcitydataindex){
     //this function is used to update existing markers at a location with some more sentences
     var index = cityToMarkersArray[data.city]; //get marker array index for the city
+    if(index === 31){
+        console.log("city:" + data.city + " citytoarray:" + cityToMarkersArray[data.city] + "");   
+    }
+    allcitydata[allcitydataindex].markerArrayIndex = index; //store marker index for this sentence
     var content = markerArray[index].info.getContent(this); //get existing content
     var location = markerArray[index].getPosition(); //get existing location
-    allcitydata[allcitydataindex].googlelocation = location;
-    var string = '<a href="#a' + textArray.length + '">' + data.text +  "</a>"; //create a new anchor for the new text sentence
+    allcitydata[allcitydataindex].googlelocation = location; //store the location data in allcitydata array
+//    var string = '<a href="#a' + textArray.length + '">' + data.text +  "</a>"; //create a new anchor for the new text sentence
 
+    if (textArray.indexOf(data.text) > -1){
+        var string = '<a href="#a' + textArray.indexOf(data.text) + '">' + data.text +  "</a>";
+    }else {
+        var string = '<a href="#a' + textArray.length + '">' + data.text +  "</a>";
+    }
+    
+    
+    
     content = content + "<p>" + string +  "</p>";
     
     markerArray[index].info.setContent(content);
@@ -248,15 +283,23 @@ function addExisting(data, allcitydataindex){
     
     var indarray = [];
     if (data.text in textToMarkersArray){   //if the sentence contains more than one location
-        textToMarkersArray[data.text].push(markerArray.length); //map the marker index to the text sentence
+        textToMarkersArray[data.text].push(index); //map the marker index to the text sentence
     }
     else{
-        indarray.push(markerArray.length);
+        indarray.push(index);
         textToMarkersArray[data.text] = indarray; //map the marker index to the text sentence
     }
     
-    idNametoMarkerArray["a" + (textArray.length) ] = index; //map id name to marker array index number
-    textArray.push(data.text);
+    
+    //textArray.push(data.text);
+    
+    if (textArray.indexOf(data.text) > -1){
+        idNametoMarkerArray["a" + textArray.indexOf(data.text) ] = index;
+    }else{
+        idNametoMarkerArray["a" + (textArray.length) ] = index;
+        textArray.push(data.text);
+    }
+    
     
 }
 
@@ -337,7 +380,7 @@ function convertToHtml(){
 
 function centerOnMarker(pass){
     //this function is used to centre the map on the related marker when a sentence is clicked in the text explorer
-    //var index = textToMarkersArray[pass.innerHTML]; //get the marker index using the text sentence
+    
     p = pass.id;
     var idnum = p.slice(1); //get the id number "a12" -> "12"
     
@@ -347,16 +390,16 @@ function centerOnMarker(pass){
         markerArray[i].setIcon('http://maps.google.com/mapfiles/marker.png'); //set the old one to standard
     }
     
-    var test = textToMarkersArray[pass.innerHTML];
-    for (var i in test){
-         markerArray[test[i]].info.open(map, markerArray[test[i]]); //open the relevant infowindow
-         markerArray[test[i]].setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png'); //set the current marker to green
+    var markerIndexes = textToMarkersArray[pass.innerHTML];
+    for (var i in markerIndexes){
+         markerArray[markerIndexes[i]].info.open(map, markerArray[markerIndexes[i]]); //open the relevant infowindow
+         markerArray[markerIndexes[i]].setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png'); //set the current marker to green
     }
     //center the mao
-    var LatLng  = markerArray[index].getPosition();
+    var LatLng  = markerArray[markerIndexes[0]].getPosition();
     map.setCenter(LatLng);
     map.setZoom(6);
-    clickindex = index;
+    clickindex = markerIndexes[0];
     if (subsetflag == true)
     {
         showsubsetoflines(parseInt(idnum));
@@ -412,22 +455,32 @@ function restoremarkers(){
 
 function setmarkervisible(pass){
     // set an individual marker to visible, used for the scroll filter function
-    var index = idNametoMarkerArray[pass.id];
-    if(index == undefined){
+    //var index = idNametoMarkerArray[pass.id];
+    var markerIndexes = textToMarkersArray[pass.innerHTML];
+    var test;
+    if(markerIndexes == undefined){
         console.log("on undefined id:" + pass.id)
     }else{
-        markerArray[index].setMap(map);
+        for (var i in markerIndexes){
+            markerArray[markerIndexes[i]].setMap(map);
+            test += " " + markerIndexes[i];
+        }
+        //markerArray[index].setMap(map);
         pathlineArray[pass.id.slice(1)].setMap(map);
     }
 }
 
+
+
 function setmarkerinvisible(pass){
     // set an individual marker to invisible, used for the scroll filter function
-    var index = idNametoMarkerArray[pass.id];
-   if(index == undefined){
+     var markerIndexes = textToMarkersArray[pass.innerHTML];
+   if(markerIndexes == undefined){
         console.log("off undefined id:" + pass.id)
     }else{
-        markerArray[index].setMap(null);
+        for (var i in markerIndexes){
+            markerArray[markerIndexes[i]].setMap(null);
+        }
         pathlineArray[pass.id.slice(1)].setMap(null);
     }
 }
