@@ -1,6 +1,12 @@
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.*;
 import java.io.PrintWriter;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import edu.stanford.nlp.ie.AbstractSequenceClassifier;
@@ -165,6 +171,7 @@ public class Test {
 	      writer.close();
 	      testwriter.close();
 	      rs.close();
+	      paragraphWriter(args);
 	      try{
 	          if(stmt!=null)
 	             stmt.close();
@@ -179,6 +186,43 @@ public class Test {
 
 	    } 
 	  }
+	
+	public static void paragraphWriter(String[] args) throws IOException {
+		// TODO Auto-generated method stub
+		int counter = 0;
+		PrintWriter filewriter = new PrintWriter("HTMLparagraph.txt");
+		String replacedTxt = readFile(args[0]).replaceAll("\n\n", "<paragraph>");
+		replacedTxt = "<paragraph>" + replacedTxt;
+		replacedTxt = replacedTxt.replaceAll("\n", " ");
+		while (replacedTxt.contains("<paragraph>")){
+			if (counter == 0){
+				replacedTxt = replacedTxt.replaceFirst("<paragraph>", "<p id=paragraph" + counter + ">");
+			}
+			else {
+				replacedTxt = replacedTxt.replaceFirst("<paragraph>", "</p>\n<p id=paragraph" + counter + ">");
+			}
+			counter++;
+		}
+		if(replacedTxt.substring(replacedTxt.length()- 3, replacedTxt.length()- 1) != "<p>")
+			replacedTxt = replacedTxt + "<p>";
+		
+		
+		filewriter.print(replacedTxt);
+		filewriter.close();
+	}
+	
+	public static String readFile(String path) throws IOException {
+		  FileInputStream stream = new FileInputStream(new File(path));
+		  try {
+		    FileChannel fc = stream.getChannel();
+		    MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
+		    /* Instead of using default, pass in a decoder. */
+		    return Charset.defaultCharset().decode(bb).toString();
+		  }
+		  finally {
+		    stream.close();
+		  }
+	}
 
 	
 

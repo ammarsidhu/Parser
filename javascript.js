@@ -21,6 +21,7 @@ var clickindex=0;               //last icon clicked
 var panorama;
 var directionsService;
 var scrollfilterflag = false;   //flag for handling text scroll filtering
+var pressTimer;
 
 
 function initialise() {
@@ -89,7 +90,7 @@ function geocode(index, data1){
     // function is used to call the google geocode service and get coordinates for any locations that are missing that data
     geocoder = new google.maps.Geocoder();
     return $.Deferred(function(deferred) {  // use defers as a form of promise
-        var url_addr = encodeURIComponent(data1.city);
+        var url_addr = encodeURIComponent(data1.city); //need to transform string into url for php script
         $.getJSON('geocode.php?addr='+url_addr, function(reqdata) { // use outside php code to actually make the requests, takes some load off of the javascipt and 
             var results = reqdata.results;                          // transfers it to the backround server
             var status = reqdata.status;
@@ -114,7 +115,7 @@ function geocode(index, data1){
                     country = "XX";
                 }
                 
-                //create a location object and store it
+                //create a location object and store it, use a negative elevation to easily find updates to the database that were made from this porgram
                 var locationdata = {name: data1.city, latitude:latitude, longitude:longitude, country:country, elevation:-1000000};
                 geonamesdatabasearray.push(locationdata);
                 
@@ -182,7 +183,7 @@ function addMarker(data, location, allcitydataindex){
     // this function is used to create new markers for a location or city.
     
     allcitydata[allcitydataindex].googlelocation = location; // add the google location object to allcitydata array
-    
+    allcitydata[allcitydataindex].linearrayindex = lineArrayIndex;
     //create the marker
     var marker = new google.maps.Marker({
         map: map, 
@@ -194,9 +195,10 @@ function addMarker(data, location, allcitydataindex){
 //    var string = '<a href="#a' + textArray.length + '">' + data.text +  "</a>"; // set anchor tags around the sentence containing the location name so it can be linked
 //                                                                                 to the text explorer
     
-    if (textArray.indexOf(data.text) > -1){
+    //if the Sentence is contains multiple city locations, check it it is being used already
+    if (textArray.indexOf(data.text) > -1){// if the sentence has already been used, get html anchor id name
         var string = '<a href="#a' + textArray.indexOf(data.text) + '">' + data.text +  "</a>";
-    }else {
+    }else {// create new anchor id
         var string = '<a href="#a' + textArray.length + '">' + data.text +  "</a>";
     }
     
@@ -206,7 +208,8 @@ function addMarker(data, location, allcitydataindex){
     
     // create the infowindow when a marker is clicked containing the location name and text data
     marker.info = new google.maps.InfoWindow({
-          content: "<h3>"+ data.city + "</h3>" + string
+          content:  '<p><button id=b' + markerArray.length + ' onclick="deleteMarker(this.id)">Delete Marker</button></p>' + 
+                    "<h3>"+ data.city + "</h3>" + string 
         });
     cityToMarkersArray[data.city] = markerArray.length; // map the city name to the marker array index 
 
@@ -233,10 +236,10 @@ function addMarker(data, location, allcitydataindex){
 //            panorama.setVisible(true);
         });
     
-    
+    //this is used to map the text to the marker array index (one sentence can contain multiple city locations)
     var indarray = [];
-    if (data.text in textToMarkersArray){   //if the sentence contains more than one location
-        textToMarkersArray[data.text].push(markerArray.length); //map the marker index to the text sentence
+    if (data.text in textToMarkersArray){   //if the sentence contains more than one location and has already been used before
+        textToMarkersArray[data.text].push(markerArray.length); //map the marker index to the text sentence, add it to the array
     }
     else{
         indarray.push(markerArray.length);
@@ -279,7 +282,7 @@ function addExisting(data, allcitydataindex){
     var content = markerArray[index].info.getContent(this); //get existing content
     var location = markerArray[index].getPosition(); //get existing location
     allcitydata[allcitydataindex].googlelocation = location; //store the location data in allcitydata array
-
+    allcitydata[allcitydataindex].linearrayindex = lineArrayIndex;
     if (textArray.indexOf(data.text) > -1){
         var string = '<a href="#a' + textArray.indexOf(data.text) + '">' + data.text +  "</a>";
     }else {
@@ -324,6 +327,7 @@ function addExisting(data, allcitydataindex){
 }
 
 function createLines(){
+    pathlineArray.length = 0; // clear the array if this function is run to update the line
     var firstindex;
     for (var i in allcitydata){
         if(allcitydata[i].geocode){
@@ -379,7 +383,7 @@ function addLine (startPosition, endPosition, allcitydataindex){
 
 function convertToHtml(){
     //function is used to create the highlighting and links in the text explorer
-    jQuery.get('sample.txt', function(noveltext) { // load the data
+    jQuery.get('HTMLparagraph.txt', function(noveltext) { // load the data
     var string = noveltext;
     for (var i in textArray){
             //create the html tag with the anchor id and the onclick function
@@ -517,7 +521,6 @@ function checkOtherAnchors(index){
     var anchorindexes = markertoAnchorID[index];
     var nootheranchors = true;
     for (var i in anchorindexes){
-        //console.log(anchorindexes[0]);
         if (isScrolledIntoView(document.getElementById(anchorindexes[i]))){
             nootheranchors = false;
         }
@@ -544,6 +547,32 @@ function isScrolledIntoView(elem) {
          
     return (docViewBottom >= elemTop && docViewTop <= elemBottom);
 }
+
+function deleteMarker(buttonID){
+   
+    var idnum = buttonID.slice(1);
+    var city = markerArray[idnum].title;
+    markerArray[idnum].setMap(null);
+    var arrayindex = [];
+    arrayindex = findCityIndexes(city);
+    for(var i in arrayindex){
+        allcitydata[arrayindex[i]].geocode = false;
+    }
+    //clearArray(pathlineArray);
+    removeline();
+    createLines();
+}
+
+function findCityIndexes(cityname){
+    var cityindexarray = [];
+    for(var i in allcitydata){
+        if (allcitydata[i].city == cityname){
+            cityindexarray.push(i);
+        }
+    }
+    return cityindexarray;
+}
+
 
 
 
@@ -598,7 +627,11 @@ jQuery(function($) {
             }
         });
     })
+    
+
+
 });	
+
 
 google.maps.event.addDomListener(window, 'load', initialise);
 
