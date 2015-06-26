@@ -12,7 +12,7 @@ var cityToMarkersArray = {};    //convert city name to marker array index
 var textToMarkersArray = {};    //convert text name to marker array index
 var idNametoMarkerArray = {};   //convert html anchor id to marker array index
 var idNametoLineArray = {};     //convert anchor id to pathlineArray index
-var markertoAnchorID = {};
+var markertoAnchorID = {};      //convert marker to anchor IDs
 var lineArrayIndex = 0;
 var allcitydata;                //hold json data
 var lastposition;               //last position for lines
@@ -171,10 +171,13 @@ for (var i in allcitydata) {
     convertToHtml(); //after all the markers have been made, create the text formatting and links for the text explorer
     createLines();
     
-    console.table(textToMarkersArray);
-    console.table(idNametoMarkerArray);
-    console.table(idNametoLineArray);
-    console.table(markertoAnchorID);
+//    console.table(textToMarkersArray);
+//    console.table(idNametoMarkerArray);
+//    console.table(idNametoLineArray);
+//    console.table(markertoAnchorID);
+    console.log(allcitydata);
+    console.log(Object.keys(allcitydata));
+    //testID();
 }
     
 
@@ -197,13 +200,12 @@ function addMarker(data, location, allcitydataindex){
     
     //if the Sentence is contains multiple city locations, check it it is being used already
     var sentence = data.text;
-    sentence = sentence.replace(data.city, "<strong>" + data.city + "</strong>");
+    sentence = sentence.replace(data.city, "<b>" + data.city + "</b>");
     if (textArray.indexOf(data.text) > -1){// if the sentence has already been used, get html anchor id name
         var string = '<a href="#a' + textArray.indexOf(data.text) + '">' + sentence +  "</a>";
     }else {// create new anchor id
         var string = '<a href="#a' + textArray.length + '">' + sentence +  "</a>";
     }
-    console.log(sentence);
     
     
     
@@ -260,6 +262,7 @@ function addMarker(data, location, allcitydataindex){
         idNametoLineArray["a" + textArray.indexOf(data.text) ].push(lineArrayIndex);
         markerindarray.push ("a" + textArray.indexOf(data.text));
         markertoAnchorID[markerArray.length] = markerindarray;
+        allcitydata[allcitydataindex].anchorID = "a" + textArray.indexOf(data.text);
     }else{
         idindarray.push(markerArray.length);
         idindarray2.push(lineArrayIndex);
@@ -267,6 +270,7 @@ function addMarker(data, location, allcitydataindex){
         idNametoLineArray["a" + (textArray.length) ] = idindarray2;
         textArray.push(data.text);
         markerindarray.push ("a" + (textArray.length));
+        allcitydata[allcitydataindex].anchorID = "a" + (textArray.length);
         markertoAnchorID[markerArray.length] = markerindarray;
     }
     
@@ -315,11 +319,13 @@ function addExisting(data, allcitydataindex){
         idNametoMarkerArray["a" + textArray.indexOf(data.text) ].push(index);
         idNametoLineArray["a" + textArray.indexOf(data.text) ].push(lineArrayIndex);
         markertoAnchorID[index].push("a" + textArray.indexOf(data.text) );
+        allcitydata[allcitydataindex].anchorID = "a" + textArray.indexOf(data.text);
     }else{
         idindarray.push(index);
         idindarray2.push(lineArrayIndex);
         idNametoMarkerArray["a" + (textArray.length) ] = idindarray;
         idNametoLineArray["a" + (textArray.length) ] = idindarray2;
+        allcitydata[allcitydataindex].anchorID = "a" + (textArray.length);
         markertoAnchorID[index].push("a" + (textArray.length));
         textArray.push(data.text);
     }
@@ -376,6 +382,8 @@ function addLine (startPosition, endPosition, allcitydataindex){
         }]
     });
     
+    allcitydata[allcitydataindex].pathlineArrayIndex = pathlineArray.length;
+    
     var test = google.maps.geometry.spherical.computeDistanceBetween (startPosition, endPosition)/1000;
     
     //console.log(test);
@@ -387,23 +395,56 @@ function addLine (startPosition, endPosition, allcitydataindex){
 function convertToHtml(){
     //function is used to create the highlighting and links in the text explorer
     jQuery.get('HTMLparagraph.txt', function(noveltext) { // load the data
-    var string = noveltext;
-    for (var i in textArray){
-            //create the html tag with the anchor id and the onclick function
-            var stringreplace = '<a id="a' + i + '"  class="jumpanchor" style="background-color:yellow" href="#" onclick="centerOnMarker(this);">' + textArray[i] + "</a>";
-            
-            // ignore any whitespace formatting when searching for the sentence
-            var num = textArray[i].split(' ');
-            var t = num[0];
-            for(i = 1; i < num.length; i++){
-                t += "([\\s]*)" + num[i];
-            }
-            var regex = new RegExp(t);
-            noveltext = noveltext.replace(regex, stringreplace); //replace the old text with the new one with html tags
-            
+        var string = noveltext;
+        for (var i in textArray){
+                //create the html tag with the anchor id and the onclick function
+                var stringreplace = '<a id="a' + i + '"  class="jumpanchor" style="background-color:yellow" href="#" onclick="centerOnMarker(this);">' + textArray[i] + "</a>";
+
+                // ignore any whitespace formatting when searching for the sentence
+                var num = textArray[i].split(' ');
+                var t = num[0];
+                for(i = 1; i < num.length; i++){
+                    t += "([\\s]*)" + num[i];
+                }
+                var regex = new RegExp(t);
+                noveltext = noveltext.replace(regex, stringreplace); //replace the old text with the new one with html tags
+
         }
         document.getElementById("inputtext").innerHTML = noveltext; //update the html dom element with the new formatted text
+        
+        
+        var paragraphID;
+        for (var i in textArray){
+            var indexes = [];
+            indexes = findAnchorallcitydataIndex("a" + i);
+            paragraphID = document.getElementById("a" + i).parentElement.getAttribute('id');
+            for(var j in indexes){
+                allcitydata[indexes[j]].paragraphID = paragraphID;
+                allcitydata[indexes[j]].paragraphIDNumber = paragraphID.slice(9);
+            }
+        }
+       
+        
+        
     });
+}
+
+function findAnchorallcitydataIndex(anchorname){
+    var indexes = [];
+    for(var i in allcitydata){
+           if(allcitydata[i].anchorID == anchorname){
+               indexes.push(i);
+           }
+    }
+    return indexes;
+}
+
+function testID(){
+    for(var i in allcitydata){
+        console.log(allcitydata[i].paragraphID);
+        console.log(allcitydata[i].paragraphIDNumber);
+        console.log(allcitydata[i].pathlineArrayIndex);
+    }
 }
 
 
