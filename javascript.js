@@ -196,11 +196,14 @@ function addMarker(data, location, allcitydataindex){
 //                                                                                 to the text explorer
     
     //if the Sentence is contains multiple city locations, check it it is being used already
+    var sentence = data.text;
+    sentence = sentence.replace(data.city, "<strong>" + data.city + "</strong>");
     if (textArray.indexOf(data.text) > -1){// if the sentence has already been used, get html anchor id name
-        var string = '<a href="#a' + textArray.indexOf(data.text) + '">' + data.text +  "</a>";
+        var string = '<a href="#a' + textArray.indexOf(data.text) + '">' + sentence +  "</a>";
     }else {// create new anchor id
-        var string = '<a href="#a' + textArray.length + '">' + data.text +  "</a>";
+        var string = '<a href="#a' + textArray.length + '">' + sentence +  "</a>";
     }
+    console.log(sentence);
     
     
     
