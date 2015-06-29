@@ -586,24 +586,26 @@ function isScrolledIntoView(elem) {
 function deleteMarker(buttonID){
    
     var idnum = buttonID.slice(1); // get marker index from button ("b12" -> 12)
-    var city = markerArray[idnum].title;
-    markerArray[idnum].setMap(null);
+    var city = markerArray[idnum].title; // get the city name of the marker
+    markerArray[idnum].setMap(null); //remove the marker
     var arrayindex = [];
-    arrayindex = findCityIndexes(city);
+    arrayindex = findCityIndexes(city); // find the indexes in allcitydata that correspond to the city name
     for(var i in arrayindex){
         allcitydata[arrayindex[i]].geocode = false;
-        var anchorid = allcitydata[arrayindex[i]].anchorID;
-        if (findAnchorallcitydataIndex(anchorid).length < 2){
-            idNametoMarkerArray[anchorid].pop();
+        var anchorid = allcitydata[arrayindex[i]].anchorID; // find the anchor id for this sentence
+        if (idNametoMarkerArray[anchorid].length < 2){ // if there is only one city associated with the anchor to be deleted
+            idNametoMarkerArray[anchorid].pop(); // clear it from the id to marker array data map
             var div = document.getElementById(anchorid);
-            div.removeAttribute("href"); //remove the link
-        }else{
-            var array = idNametoMarkerArray[anchorid];
-            var index = array.indexOf(allcitydata[arrayindex[i]].markerArrayIndex);
+            div.style.backgroundColor = 'white';
+            div.removeAttribute("href"); //remove the link in the text explorer
+        }else{ //if the anchor is associeated with more than one city, remove any references to the deleted city only
+            var array = idNametoMarkerArray[anchorid]; // get the list of markers associeated with anchor
+            var index = array.indexOf(allcitydata[arrayindex[i]].markerArrayIndex); // find the index of the deleted city 
             if (index >= 0) {
-              array.splice( index, 1 );
+              array.splice( index, 1 ); // remove it from the data map
             }
-            idNametoMarkerArray[anchorid] = array;
+            idNametoMarkerArray[anchorid] = array; // set the data map to the new array thats had the city deleted from it.
+            
         }
             
     }
