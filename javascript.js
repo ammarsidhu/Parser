@@ -22,7 +22,7 @@ var panorama;
 var directionsService;
 var scrollfilterflag = false;   //flag for handling text scroll filtering
 var pressTimer;
-
+var totaldistance = 0;
 
 function initialise() {
     
@@ -48,9 +48,6 @@ function initialise() {
     };
     
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-    directionsService = new google.maps.DirectionsService();
-    
-    panorama = map.getStreetView();
     
     getdatafromjson();
     searchformissingcoords();
@@ -62,7 +59,7 @@ function getdatafromjson(){
     //get the data that was provided by the java program and geonames backround database.
     $.ajaxSetup( { "async": false } );
     $.getJSON('data1.json', function (data1) {
-        allcitydata = data1;
+        allcitydata = data1; //load the daata into the main backround array allcitydata
     });	
     $.ajaxSetup( { "async": true } );
     
@@ -169,24 +166,19 @@ for (var i in allcitydata) {
     }
 }
     convertToHtml(); //after all the markers have been made, create the text formatting and links for the text explorer
-    createLines();
+    createLines(); //create the lines connecting the places 
     
-//    console.table(textToMarkersArray);
-//    console.table(idNametoMarkerArray);
-//    console.table(idNametoLineArray);
-//    console.table(markertoAnchorID);
-    console.log(allcitydata);
-    console.log(Object.keys(allcitydata));
-    //testID();
+
+    console.table(idNametoMarkerArray);
 }
     
 
 		
 function addMarker(data, location, allcitydataindex){
-    // this function is used to create new markers for a location or city.
+    // this function is used to create new markers on the map for a location or city.
     
     allcitydata[allcitydataindex].googlelocation = location; // add the google location object to allcitydata array
-    allcitydata[allcitydataindex].linearrayindex = lineArrayIndex;
+    allcitydata[allcitydataindex].linearrayindex = lineArrayIndex; // add the line array index for this city in the allcitydata array
     //create the marker
     var marker = new google.maps.Marker({
         map: map, 
@@ -198,12 +190,12 @@ function addMarker(data, location, allcitydataindex){
 //    var string = '<a href="#a' + textArray.length + '">' + data.text +  "</a>"; // set anchor tags around the sentence containing the location name so it can be linked
 //                                                                                 to the text explorer
     
-    //if the Sentence is contains multiple city locations, check it it is being used already
+    //if the Sentence  contains multiple city locations, check it it is being used already
     var sentence = data.text;
     sentence = sentence.replace(data.city, "<b>" + data.city + "</b>");
-    if (textArray.indexOf(data.text) > -1){// if the sentence has already been used, get html anchor id name
+    if (textArray.indexOf(data.text) > -1){// if the sentence has already been used, get html anchor id name that was assigned to it on its creation
         var string = '<a href="#a' + textArray.indexOf(data.text) + '">' + sentence +  "</a>";
-    }else {// create new anchor id
+    }else {// create new anchor id for unused text
         var string = '<a href="#a' + textArray.length + '">' + sentence +  "</a>";
     }
     
@@ -213,7 +205,7 @@ function addMarker(data, location, allcitydataindex){
     
     // create the infowindow when a marker is clicked containing the location name and text data
     marker.info = new google.maps.InfoWindow({
-          content:  '<p><button id=b' + markerArray.length + ' onclick="deleteMarker(this.id)">Delete Marker</button></p>' + 
+          content:  '<p><button id=b' + markerArray.length + ' onclick="deleteMarker(this.id)">Delete Marker</button></p>' + // create the button to delete a city from vis
                     "<h3>"+ data.city + "</h3>" + string 
         });
     cityToMarkersArray[data.city] = markerArray.length; // map the city name to the marker array index 
@@ -237,8 +229,7 @@ function addMarker(data, location, allcitydataindex){
             }
             
 
-//            panorama.setPosition(location);
-//            panorama.setVisible(true);
+
         });
     
     //this is used to map the text to the marker array index (one sentence can contain multiple city locations)
@@ -250,27 +241,28 @@ function addMarker(data, location, allcitydataindex){
         indarray.push(markerArray.length);
         textToMarkersArray[data.text] = indarray; //map the marker index to the text sentence
     }
-    
+    // add the marker array index to allcitydata
     allcitydata[allcitydataindex].markerArrayIndex = markerArray.length;
 
    
+    
     var idindarray= [];
     var idindarray2 = [];
     var markerindarray = [];
-    if (textArray.indexOf(data.text) > -1){
-        idNametoMarkerArray["a" + textArray.indexOf(data.text) ].push(markerArray.length);
-        idNametoLineArray["a" + textArray.indexOf(data.text) ].push(lineArrayIndex);
-        markerindarray.push ("a" + textArray.indexOf(data.text));
-        markertoAnchorID[markerArray.length] = markerindarray;
-        allcitydata[allcitydataindex].anchorID = "a" + textArray.indexOf(data.text);
-    }else{
+    if (textArray.indexOf(data.text) > -1){ //check if the text has been assigned an anchor id, if it has use that one
+        idNametoMarkerArray["a" + textArray.indexOf(data.text) ].push(markerArray.length); //map anchor id to the associated marker
+        idNametoLineArray["a" + textArray.indexOf(data.text) ].push(lineArrayIndex); //map anchor id to the the associated line
+        markerindarray.push ("a" + textArray.indexOf(data.text)); // add anchor id to temp array
+        markertoAnchorID[markerArray.length] = markerindarray; //map marker index to anchor id (one marker can have many text values and anchors associated with it)
+        allcitydata[allcitydataindex].anchorID = "a" + textArray.indexOf(data.text); // store the anchor id in the allcitydata backround array
+    }else{ // else use the new id number
         idindarray.push(markerArray.length);
         idindarray2.push(lineArrayIndex);
-        idNametoMarkerArray["a" + (textArray.length) ] = idindarray;
-        idNametoLineArray["a" + (textArray.length) ] = idindarray2;
-        textArray.push(data.text);
+        idNametoMarkerArray["a" + (textArray.length) ] = idindarray; //map new anchor id to the relevent marker
+        idNametoLineArray["a" + (textArray.length) ] = idindarray2; //map new anchor id to the the associated line
+        allcitydata[allcitydataindex].anchorID = "a" + (textArray.length); //store anchor id in allcitydata
         markerindarray.push ("a" + (textArray.length));
-        allcitydata[allcitydataindex].anchorID = "a" + (textArray.length);
+        textArray.push(data.text);        
         markertoAnchorID[markerArray.length] = markerindarray;
     }
     
@@ -289,11 +281,14 @@ function addExisting(data, allcitydataindex){
     var content = markerArray[index].info.getContent(this); //get existing content
     var location = markerArray[index].getPosition(); //get existing location
     allcitydata[allcitydataindex].googlelocation = location; //store the location data in allcitydata array
-    allcitydata[allcitydataindex].linearrayindex = lineArrayIndex;
-    if (textArray.indexOf(data.text) > -1){
-        var string = '<a href="#a' + textArray.indexOf(data.text) + '">' + data.text +  "</a>";
-    }else {
-        var string = '<a href="#a' + textArray.length + '">' + data.text +  "</a>";
+    allcitydata[allcitydataindex].linearrayindex = lineArrayIndex; //store the linearray index for this sentence in allcitydata
+    
+    var sentence = data.text;
+    sentence = sentence.replace(data.city, "<b>" + data.city + "</b>");
+    if (textArray.indexOf(data.text) > -1){ //check if the text has been assigned an anchor id, if it has use that one
+        var string = '<a href="#a' + textArray.indexOf(data.text) + '">' + sentence +  "</a>";
+    }else { // else use the new id number
+        var string = '<a href="#a' + textArray.length + '">' + sentence +  "</a>";
     }
     
     
@@ -338,20 +333,21 @@ function addExisting(data, allcitydataindex){
 function createLines(){
     pathlineArray.length = 0; // clear the array if this function is run to update the line
     var firstindex;
-    for (var i in allcitydata){
+    
+    for (var i in allcitydata){ // find first valid city, use it as start
         if(allcitydata[i].geocode){
             firstindex = i;
             break;
         }
     }
     
-    var start = markerArray[firstindex].getPosition();
+    var start = markerArray[firstindex].getPosition(); //get the position of the starting marker
     var end;
     for (var i in allcitydata){
-        if (allcitydata[i].geocode){
+        if (allcitydata[i].geocode){ //if it is a valid place name
             end = allcitydata[i].googlelocation;
-            addLine(start,end,i);
-            start = end;
+            addLine(start,end,i); //create the line
+            start = end; //iterate to next location
         }
     }
     showline();
@@ -359,7 +355,6 @@ function createLines(){
 
 function addLine (startPosition, endPosition, allcitydataindex){
     var pathLatLng = [];
-    //need a beggining and end to line, if its the first location use it for both
     
     pathLatLng.push(startPosition);
     pathLatLng.push(endPosition);
@@ -372,7 +367,7 @@ function addLine (startPosition, endPosition, allcitydataindex){
     //choose some attributes for the line like colour and weight
     var pathline = new google.maps.Polyline({
         path: pathLatLng,
-        geodesic: true, // change from curved lines to straight lines
+        geodesic: true, // this is for curved lines, set to false for straight point to point lines between markers
         strokeColor: '#FF0000',
         strokeOpacity: 1.0,
         strokeWeight: 2,
@@ -382,11 +377,11 @@ function addLine (startPosition, endPosition, allcitydataindex){
         }]
     });
     
-    allcitydata[allcitydataindex].pathlineArrayIndex = pathlineArray.length;
+    allcitydata[allcitydataindex].pathlineArrayIndex = pathlineArray.length; //store the pathline array index in allcitydtaa
     
-    var test = google.maps.geometry.spherical.computeDistanceBetween (startPosition, endPosition)/1000;
-    
-    //console.log(test);
+    var distance = google.maps.geometry.spherical.computeDistanceBetween (startPosition, endPosition)/1000; // the distance between the start point and end point in km
+    totaldistance = totaldistance + distance;
+   
     
     pathlineArray.push(pathline);
 }
@@ -407,12 +402,14 @@ function convertToHtml(){
                     t += "([\\s]*)" + num[i];
                 }
                 var regex = new RegExp(t);
+            
+            
                 noveltext = noveltext.replace(regex, stringreplace); //replace the old text with the new one with html tags
 
         }
         document.getElementById("inputtext").innerHTML = noveltext; //update the html dom element with the new formatted text
         
-        
+        // this is used to find the id of the dom element that contains a piece of highlighted text, used to compute length of the novel between loactions
         var paragraphID;
         for (var i in textArray){
             var indexes = [];
@@ -430,6 +427,7 @@ function convertToHtml(){
 }
 
 function findAnchorallcitydataIndex(anchorname){
+    // one anchor or sentence can contain many city names, this is used to find the indexed in allcity data that is associated with one anchor
     var indexes = [];
     for(var i in allcitydata){
            if(allcitydata[i].anchorID == anchorname){
@@ -439,21 +437,14 @@ function findAnchorallcitydataIndex(anchorname){
     return indexes;
 }
 
-function testID(){
-    for(var i in allcitydata){
-        console.log(allcitydata[i].paragraphID);
-        console.log(allcitydata[i].paragraphIDNumber);
-        console.log(allcitydata[i].pathlineArrayIndex);
-    }
-}
 
 
 
 function centerOnMarker(pass){
     //this function is used to centre the map on the related marker when a sentence is clicked in the text explorer
     
-    p = pass.id;
-    var idnum = p.slice(1); //get the id number "a12" -> "12"
+    anchorid = pass.id;
+    var idnum = anchorid.slice(1); //get the id number "a12" -> "12"
     
     //close the rest of the infowindows
     for(i in markerArray){
@@ -461,7 +452,9 @@ function centerOnMarker(pass){
         markerArray[i].setIcon('http://maps.google.com/mapfiles/marker.png'); //set the old one to standard
     }
     
-    var markerIndexes = textToMarkersArray[pass.innerHTML];
+    //var markerIndexes = textToMarkersArray[pass.innerHTML];
+    var markerIndexes = idNametoMarkerArray[anchorid];
+    
     for (var i in markerIndexes){
          markerArray[markerIndexes[i]].info.open(map, markerArray[markerIndexes[i]]); //open the relevant infowindow
          markerArray[markerIndexes[i]].setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png'); //set the current marker to green
@@ -475,6 +468,7 @@ function centerOnMarker(pass){
     {
         showsubsetoflines(parseInt(idnum));
     }
+    
 }
 
 function removeline(){
@@ -526,15 +520,15 @@ function restoremarkers(){
 
 function setmarkervisible(pass){
     // set an individual marker to visible, used for the scroll filter function
-    var markerIndexes = idNametoMarkerArray[pass.id];
-    var lineIndexes = idNametoLineArray[pass.id];
+    var markerIndexes = idNametoMarkerArray[pass.id]; // one sentence can contain many city names, use the data map of id names to marker array indexs
+    var lineIndexes = idNametoLineArray[pass.id]; // one sentence can contain many lines between cities ,use the data map of id names to line array indexs
     if(markerIndexes == undefined){
         console.log("on undefined id:" + pass.id)
     }else{
-        for (var i in markerIndexes){
+        for (var i in markerIndexes){ //for all the markers associated with a single line of text, set to visiblie
             markerArray[markerIndexes[i]].setMap(map);
         }
-        for (var i in lineIndexes){
+        for (var i in lineIndexes){ // do the same with the lines
             pathlineArray[lineIndexes[i]].setMap(map);
         }
         
@@ -545,13 +539,13 @@ function setmarkervisible(pass){
 
 function setmarkerinvisible(pass){
     // set an individual marker to invisible, used for the scroll filter function
-    var markerIndexes = idNametoMarkerArray[pass.id];
+    var markerIndexes = idNametoMarkerArray[pass.id]; // one sentence can contain many city names, use the data map of id names to marker array indexs to find these markers
     var lineIndexes = idNametoLineArray[pass.id];
    if(markerIndexes == undefined){
         console.log("off undefined id:" + pass.id)
     }else{
         for (var i in markerIndexes){
-            if(checkOtherAnchors(markerIndexes[i])){
+            if(checkOtherAnchors(markerIndexes[i])){ 
                 markerArray[markerIndexes[i]].setMap(null);
             }
         }
@@ -562,6 +556,8 @@ function setmarkerinvisible(pass){
 }
 
 function checkOtherAnchors(index){
+    // this is used to check if a marker has mutliple anchors associated with it. It prevents a race condition when a marker is both not visible in one anchor and visible 
+    // in another. 
     var anchorindexes = markertoAnchorID[index];
     var nootheranchors = true;
     for (var i in anchorindexes){
@@ -569,12 +565,7 @@ function checkOtherAnchors(index){
             nootheranchors = false;
         }
     }
-    if (nootheranchors){
-        return true;
-    }
-    else{
-        return false;
-    }
+    return nootheranchors;
     
 }
 
@@ -594,15 +585,30 @@ function isScrolledIntoView(elem) {
 
 function deleteMarker(buttonID){
    
-    var idnum = buttonID.slice(1);
+    var idnum = buttonID.slice(1); // get marker index from button ("b12" -> 12)
     var city = markerArray[idnum].title;
     markerArray[idnum].setMap(null);
     var arrayindex = [];
     arrayindex = findCityIndexes(city);
     for(var i in arrayindex){
         allcitydata[arrayindex[i]].geocode = false;
+        var anchorid = allcitydata[arrayindex[i]].anchorID;
+        if (findAnchorallcitydataIndex(anchorid).length < 2){
+            idNametoMarkerArray[anchorid].pop();
+            var div = document.getElementById(anchorid);
+            div.removeAttribute("href"); //remove the link
+        }else{
+            var array = idNametoMarkerArray[anchorid];
+            var index = array.indexOf(allcitydata[arrayindex[i]].markerArrayIndex);
+            if (index >= 0) {
+              array.splice( index, 1 );
+            }
+            idNametoMarkerArray[anchorid] = array;
+        }
+            
     }
-    //clearArray(pathlineArray);
+    
+    
     removeline();
     createLines();
 }
