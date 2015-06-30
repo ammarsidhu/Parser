@@ -23,6 +23,7 @@ var directionsService;
 var scrollfilterflag = false;   //flag for handling text scroll filtering
 var pressTimer;
 var totaldistance = 0;
+var rainbow = new Rainbow();
 
 function initialise() {
     
@@ -169,7 +170,7 @@ for (var i in allcitydata) {
     createLines(); //create the lines connecting the places 
     
 
-    console.table(idNametoMarkerArray);
+    console.table(allcitydata);
 }
     
 
@@ -332,6 +333,7 @@ function addExisting(data, allcitydataindex){
 
 function createLines(){
     pathlineArray.length = 0; // clear the array if this function is run to update the line
+    totaldistance = 0;
     var firstindex;
     
     for (var i in allcitydata){ // find first valid city, use it as start
@@ -343,17 +345,25 @@ function createLines(){
     
     var start = markerArray[firstindex].getPosition(); //get the position of the starting marker
     var end;
+    
+    var numOfLines = 0;
+    numOfLines = countValidPlaces();
+    rainbow.setNumberRange(1, numOfLines);
+    
+    var linecount = 1;
+    
     for (var i in allcitydata){
         if (allcitydata[i].geocode){ //if it is a valid place name
             end = allcitydata[i].googlelocation;
-            addLine(start,end,i); //create the line
+            addLine(start,end,i, linecount); //create the line
             start = end; //iterate to next location
+            linecount++;
         }
     }
     showline();
 }
 
-function addLine (startPosition, endPosition, allcitydataindex){
+function addLine (startPosition, endPosition, allcitydataindex, rainbowNumber){
     var pathLatLng = [];
     
     pathLatLng.push(startPosition);
@@ -368,7 +378,7 @@ function addLine (startPosition, endPosition, allcitydataindex){
     var pathline = new google.maps.Polyline({
         path: pathLatLng,
         geodesic: true, // this is for curved lines, set to false for straight point to point lines between markers
-        strokeColor: '#FF0000',
+        strokeColor: "#" + rainbow.colourAt(rainbowNumber),
         strokeOpacity: 1.0,
         strokeWeight: 2,
         icons: [{
@@ -587,7 +597,10 @@ function deleteMarker(buttonID){
    
     var idnum = buttonID.slice(1); // get marker index from button ("b12" -> 12)
     var city = markerArray[idnum].title; // get the city name of the marker
+    markerArray[idnum].setVisible(false);
+    markerArray[idnum].info.close();
     markerArray[idnum].setMap(null); //remove the marker
+    
     var arrayindex = [];
     arrayindex = findCityIndexes(city); // find the indexes in allcitydata that correspond to the city name
     for(var i in arrayindex){
@@ -600,7 +613,8 @@ function deleteMarker(buttonID){
             div.removeAttribute("href"); //remove the link in the text explorer
         }else{ //if the anchor is associeated with more than one city, remove any references to the deleted city only
             var array = idNametoMarkerArray[anchorid]; // get the list of markers associeated with anchor
-            var index = array.indexOf(allcitydata[arrayindex[i]].markerArrayIndex); // find the index of the deleted city 
+            var index = array.indexOf(allcitydata[arrayindex[i]].markerArrayIndex); // find the index of the deleted city
+            //var index =  $.inArray(allcitydata[arrayindex[i]].markerArrayIndex, array); // find the index of the deleted city
             if (index >= 0) {
               array.splice( index, 1 ); // remove it from the data map
             }
@@ -625,6 +639,15 @@ function findCityIndexes(cityname){
     return cityindexarray;
 }
 
+function countValidPlaces(){
+    var count = 0;
+    for (var i in allcitydata){
+        if(allcitydata[i].geocode){
+            count++;
+        }
+    }
+    return count;
+}
 
 
 
