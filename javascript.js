@@ -348,7 +348,8 @@ function createLines(){
     
     var numOfLines = 0;
     numOfLines = countValidPlaces();
-    rainbow.setNumberRange(1, numOfLines);
+    rainbow.setNumberRange(1, numOfLines); //set number of steps in the gradient for the colour of the lines
+    rainbow.setSpectrum('red', 'blue'); // set the different colours of the gradient, default is a rainbow.
     
     var linecount = 1;
     
@@ -471,7 +472,7 @@ function centerOnMarker(pass){
     }
     //center the mao
     var LatLng  = markerArray[markerIndexes[0]].getPosition();
-    map.setCenter(LatLng);
+    map.panTo(LatLng);
     map.setZoom(6);
     clickindex = markerIndexes[0];
     if (subsetflag == true)
@@ -691,16 +692,21 @@ jQuery(function($) {
     
     // scroll view function
     $('#content').bind('scroll', function() {
+        var scrollindexes = [];
         $('.jumpanchor').each(function () {
             if(scrollfilterflag == true){
                 if(isScrolledIntoView(this)){
                     setmarkervisible(this);
+                    scrollindexes.push(this.id);
                 }
                 else{
                     setmarkerinvisible(this);
                 }
             }
         });
+        var anchorid = scrollindexes[scrollindexes.length-1];
+        centerOnMarker(document.getElementById(anchorid));
+        scrollindexes.length = 0;
     })
     
 
