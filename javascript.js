@@ -60,7 +60,7 @@ function initialise() {
 function getdatafromjson(){
     //get the data that was provided by the java program and geonames backround database.
     $.ajaxSetup( { "async": false } );
-    $.getJSON('data1.json', function (data1) {
+    $.getJSON('AllCityData.json', function (data1) {
         allcitydata = data1; //load the daata into the main backround array allcitydata
     });	
     $.ajaxSetup( { "async": true } );
@@ -155,16 +155,16 @@ function moreAddresses() {
 for (var i in allcitydata) {
     if (allcitydata[i].city in cityToMarkersArray){ // if the city has already had a marker made, update it with the new information
         addExisting(allcitydata[i],i);
-        cityCounter[allcitydata[i].city] = cityCounter[allcitydata[i].city] + 1;
+        cityCounter[allcitydata[i].city] = cityCounter[allcitydata[i].city] + 1; //keep a running total of how many times a city is referenced
     }
     else{
         if (allcitydata[i].geocode === false){ //could not find any geocode information for the location
-            alert("no geocode for:" + allcitydata[i].city);
+            console.log("no geocode for:" + allcitydata[i].city);
         }
         else{ // create a new marker for the city
             var position =  new google.maps.LatLng(allcitydata[i].latitude, allcitydata[i].longitude);   
             addMarker(allcitydata[i],position,i);
-            cityCounter[allcitydata[i].city] = 1;
+            cityCounter[allcitydata[i].city] = 1; //add to running total of city name mentions
         }
 
     }
@@ -195,6 +195,7 @@ function addMarker(data, location, allcitydataindex){
 //                                                                                 to the text explorer
     
     //if the Sentence  contains multiple city locations, check it it is being used already
+    //create the link to the text explorer in the marker infowindow
     var sentence = data.text;
     sentence = sentence.replace(data.city, "<b>" + data.city + "</b>");
     if (textArray.indexOf(data.text) > -1){// if the sentence has already been used, get html anchor id name that was assigned to it on its creation
@@ -423,15 +424,15 @@ function convertToHtml(){
         }
         document.getElementById("inputtext").innerHTML = noveltext; //update the html dom element with the new formatted text
         
-        // this is used to find the id of the dom element that contains a piece of highlighted text, used to compute length of the novel between loactions
+        // this is used to find the id of the dom element (paragraph) that contains a piece of highlighted text, used to compute length of the novel (in paragraphs) between loactions
         var paragraphID;
         for (var i in textArray){
             var indexes = [];
-            indexes = findAnchorallcitydataIndex("a" + i);
-            paragraphID = document.getElementById("a" + i).parentElement.getAttribute('id');
+            indexes = findAnchorallcitydataIndex("a" + i); //look for the allcitydata indexes that correspond to the associated text sentence
+            paragraphID = document.getElementById("a" + i).parentElement.getAttribute('id'); //get the paragraph that contains the text sentence anchor
             for(var j in indexes){
-                allcitydata[indexes[j]].paragraphID = paragraphID;
-                allcitydata[indexes[j]].paragraphIDNumber = paragraphID.slice(9);
+                allcitydata[indexes[j]].paragraphID = paragraphID; //save the paragraph id in allcitydata
+                allcitydata[indexes[j]].paragraphIDNumber = paragraphID.slice(9); //save the paragraph id number for any calcultions (paragraph12 -> 12)
             }
         }
        
@@ -441,7 +442,7 @@ function convertToHtml(){
 }
 
 function findAnchorallcitydataIndex(anchorname){
-    // one anchor or sentence can contain many city names, this is used to find the indexed in allcity data that is associated with one anchor
+    // one anchor or sentence can contain many city names, this is used to find the index numbers in allcitydata that is associated with one anchor
     var indexes = [];
     for(var i in allcitydata){
            if(allcitydata[i].anchorID == anchorname){
@@ -463,19 +464,19 @@ function centerOnMarker(pass){
     //close the rest of the infowindows
     for(i in markerArray){
         markerArray[i].info.close();
-        markerArray[i].setIcon('http://maps.google.com/mapfiles/marker.png'); //set the old one to standard
+        markerArray[i].setIcon('http://maps.google.com/mapfiles/marker.png'); //set the markers to the standard red one
     }
     
     //var markerIndexes = textToMarkersArray[pass.innerHTML];
-    var markerIndexes = idNametoMarkerArray[anchorid];
+    var markerIndexes = idNametoMarkerArray[anchorid]; //get the marker indexes that correspond to an anchor id name
     
     for (var i in markerIndexes){
          markerArray[markerIndexes[i]].info.open(map, markerArray[markerIndexes[i]]); //open the relevant infowindow
          markerArray[markerIndexes[i]].setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png'); //set the current marker to green
     }
-    //center the mao
-    var LatLng  = markerArray[markerIndexes[0]].getPosition();
-    map.panTo(LatLng);
+    //center the map
+    var LatLng  = markerArray[markerIndexes[0]].getPosition(); //choose one of the markers to centre on (one sentence can reference many places)
+    map.panTo(LatLng); // pan to the location
     map.setZoom(6);
     clickindex = markerIndexes[0];
     if (subsetflag == true)
@@ -536,8 +537,8 @@ function setmarkervisible(pass){
     // set an individual marker to visible, used for the scroll filter function
     var markerIndexes = idNametoMarkerArray[pass.id]; // one sentence can contain many city names, use the data map of id names to marker array indexs
     var lineIndexes = idNametoLineArray[pass.id]; // one sentence can contain many lines between cities ,use the data map of id names to line array indexs
-    if(markerIndexes == undefined){
-        console.log("on undefined id:" + pass.id)
+    if(markerIndexes == undefined){ 
+        console.log("set marker visible error undefined id:" + pass.id)
     }else{
         for (var i in markerIndexes){ //for all the markers associated with a single line of text, set to visiblie
             markerArray[markerIndexes[i]].setMap(map);
@@ -554,12 +555,12 @@ function setmarkervisible(pass){
 function setmarkerinvisible(pass){
     // set an individual marker to invisible, used for the scroll filter function
     var markerIndexes = idNametoMarkerArray[pass.id]; // one sentence can contain many city names, use the data map of id names to marker array indexs to find these markers
-    var lineIndexes = idNametoLineArray[pass.id];
+    var lineIndexes = idNametoLineArray[pass.id]; //same for lines
    if(markerIndexes == undefined){
         console.log("off undefined id:" + pass.id)
     }else{
         for (var i in markerIndexes){
-            if(checkOtherAnchors(markerIndexes[i])){ 
+            if(checkOtherAnchors(markerIndexes[i])){ // check for race condition, one city can have text that is both visible and invisible in the text explorer
                 markerArray[markerIndexes[i]].setMap(null);
             }
         }
@@ -570,16 +571,16 @@ function setmarkerinvisible(pass){
 }
 
 function checkOtherAnchors(index){
-    // this is used to check if a marker has mutliple anchors associated with it. It prevents a race condition when a marker is both not visible in one anchor and visible 
+    // this is used to check if a marker has mutliple anchors associated with it. It prevents a race condition when a city is both not visible in one anchor and visible 
     // in another. 
     var anchorindexes = markertoAnchorID[index];
-    var nootheranchors = true;
+    var noOtherAnchors = true;
     for (var i in anchorindexes){
         if (isScrolledIntoView(document.getElementById(anchorindexes[i]))){
-            nootheranchors = false;
+            noOtherAnchors = false;
         }
     }
-    return nootheranchors;
+    return noOtherAnchors;
     
 }
 

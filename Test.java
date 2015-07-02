@@ -43,7 +43,7 @@ public class Test {
 	public static void main(String[] args) throws Exception{
 		// TODO Auto-generated method stub
 		String serializedClassifier = "classifiers/english.all.3class.distsim.crf.ser.gz";
-	    FileWriter file = new FileWriter("data1.json");
+	    FileWriter file = new FileWriter("AllCityData.json");
 	    PrintWriter writer = new PrintWriter("output.txt");
 	    PrintWriter testwriter = new PrintWriter("testwriter.txt");
 
@@ -51,6 +51,8 @@ public class Test {
 	    
 	    Connection conn = null;
 	    Statement stmt = null;
+	    
+	    writer.println(args[0]);
 	    
 	    try{
 	        // Register JDBC driver
