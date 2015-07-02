@@ -22,20 +22,20 @@ import org.json.simple.JSONObject;
 public class Test {
 	
 		//JDBC driver name and database URL
-	   static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
-	   static final String DB_URL = "jdbc:mysql://localhost/geonarrative"; //change
-//
-//	   //  Database credentials
-	   static final String USER = "vialab";
-	   static final String PASS = "Oshawa;Collins!"; ////change
-	
-//	// JDBC driver name and database URL
 //	   static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
-//	   static final String DB_URL = "jdbc:mysql://localhost/thesis"; //change
-//
-//	   //  Database credentials
-//	   static final String USER = "test";
-//	   static final String PASS = "test"; ////change
+//	   static final String DB_URL = "jdbc:mysql://localhost/geonarrative"; //change
+////
+////	   //  Database credentials
+//	   static final String USER = "vialab";
+//	   static final String PASS = "Oshawa;Collins!"; ////change
+	
+	// JDBC driver name and database URL
+	   static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
+	   static final String DB_URL = "jdbc:mysql://localhost/thesis"; //change
+
+	   //  Database credentials
+	   static final String USER = "test";
+	   static final String PASS = "test"; ////change
 
 	/**
 	 * @param args
@@ -128,10 +128,10 @@ public class Test {
 			        	
 			        	// use this sql call with the placename to see if there are any matches in the geonames database
 			        	//ammar computer
-			        	//sql = "select name,asciiname,latitude,longitude,population from thesis.geonames where name = '" + compound + "' or asciiname = '" + compound + "'order by population desc limit 1;";
+			        	sql = "select name,asciiname,latitude,longitude,population from thesis.geonames where name = '" + compound + "' or asciiname = '" + compound + "'order by population desc limit 1;";
 			        	
 			        	//vialab
-			        	sql = "select name,asciiname,latitude,longitude,population from geonarrative.geonames where name = '" + compound + "' or asciiname = '" + compound + "'order by population desc limit 1;";
+			        	//sql = "select name,asciiname,latitude,longitude,population from geonarrative.geonames where name = '" + compound + "' or asciiname = '" + compound + "'order by population desc limit 1;";
 			  	      	
 			        	rs = stmt.executeQuery(sql);
 			  	      	
