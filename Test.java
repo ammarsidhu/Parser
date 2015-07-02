@@ -207,7 +207,7 @@ public class Test {
 			}
 			counter++;
 		}
-		if(replacedTxt.substring(replacedTxt.length()- 3, replacedTxt.length()- 1) != "</p>") //close the html tag if its missing
+		if(replacedTxt.substring(replacedTxt.length()- 4, replacedTxt.length()- 1) != "</p>") //close the html tag if its missing
 			replacedTxt = replacedTxt + "</p>";
 		
 		
