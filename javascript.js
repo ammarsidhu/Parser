@@ -355,7 +355,7 @@ function createLines(){
     rainbow.setNumberRange(1, numOfLines); //set number of steps in the gradient for the colour of the lines
     rainbow.setSpectrum('red', 'blue'); // set the different colours of the gradient, default is a rainbow.
     
-    var linecount = 1;
+    var linecount = 1; // usedd for the step in the gradient
     
     for (var i in allcitydata){
         if (allcitydata[i].geocode){ //if it is a valid place name
@@ -403,7 +403,7 @@ function addLine (startPosition, endPosition, allcitydataindex, rainbowNumber){
 		
 
 function convertToHtml(){
-    //function is used to create the highlighting and links in the text explorer
+    //function is used to create the highlighting and links in the text explorer, converting plain text to html anchor links
     jQuery.get('HTMLparagraph.txt', function(noveltext) { // load the data
         var string = noveltext;
         for (var i in textArray){
@@ -573,10 +573,10 @@ function setmarkerinvisible(pass){
 function checkOtherAnchors(index){
     // this is used to check if a marker has mutliple anchors associated with it. It prevents a race condition when a city is both not visible in one anchor and visible 
     // in another. 
-    var anchorindexes = markertoAnchorID[index];
+    var anchorindexes = markertoAnchorID[index]; // get all the anchors that are associated with one city
     var noOtherAnchors = true;
     for (var i in anchorindexes){
-        if (isScrolledIntoView(document.getElementById(anchorindexes[i]))){
+        if (isScrolledIntoView(document.getElementById(anchorindexes[i]))){ // if any of the anchors are associated with a place are visible, keep it visible
             noOtherAnchors = false;
         }
     }
@@ -589,13 +589,13 @@ function isScrolledIntoView(elem) {
     if ($(elem).length == 0) {
         return false;
     }
-    var docViewTop = $('#inputtext').scrollTop();
-    var docViewBottom = docViewTop + $('#inputtext').height();
+    var docViewTop = $('#inputtext').scrollTop(); //get top of scroll dom element
+    var docViewBottom = docViewTop + $('#inputtext').height(); //get bottom of scroll dom element
 
-    var elemTop = $(elem).offset().top;
+    var elemTop = $(elem).offset().top; //get the  height of the anchor in the scroll element
     var elemBottom = elemTop + $(elem).height();
          
-    return (docViewBottom >= elemTop && docViewTop <= elemBottom);
+    return (docViewBottom >= elemTop && docViewTop <= elemBottom); //if the anchor is visible return true
 }
 
 function deleteMarker(buttonID){
@@ -613,7 +613,7 @@ function deleteMarker(buttonID){
         var anchorid = allcitydata[arrayindex[i]].anchorID; // find the anchor id for this sentence
         if (idNametoMarkerArray[anchorid].length < 2){ // if there is only one city associated with the anchor to be deleted
             idNametoMarkerArray[anchorid].pop(); // clear it from the id to marker array data map
-            var div = document.getElementById(anchorid);
+            var div = document.getElementById(anchorid); // get the dom element associated with the anchor
             div.style.backgroundColor = 'white';
             div.removeAttribute("href"); //remove the link in the text explorer
         }else{ //if the anchor is associeated with more than one city, remove any references to the deleted city only
