@@ -191,13 +191,11 @@ function addMarker(data, location, allcitydataindex){
     });	
     
     marker.setIcon('http://maps.google.com/mapfiles/marker.png');
-//    var string = '<a href="#a' + textArray.length + '">' + data.text +  "</a>"; // set anchor tags around the sentence containing the location name so it can be linked
-//                                                                                 to the text explorer
     
     //if the Sentence  contains multiple city locations, check it it is being used already
     //create the link to the text explorer in the marker infowindow
     var sentence = data.text;
-    sentence = sentence.replace(data.city, "<b>" + data.city + "</b>");
+    sentence = sentence.replace(data.city, "<b>" + data.city + "</b>"); //bold the city name in the sentence
     if (textArray.indexOf(data.text) > -1){// if the sentence has already been used, get html anchor id name that was assigned to it on its creation
         var string = '<a href="#a' + textArray.indexOf(data.text) + '">' + sentence +  "</a>";
     }else {// create new anchor id for unused text
@@ -289,7 +287,7 @@ function addExisting(data, allcitydataindex){
     allcitydata[allcitydataindex].linearrayindex = lineArrayIndex; //store the linearray index for this sentence in allcitydata
     
     var sentence = data.text;
-    sentence = sentence.replace(data.city, "<b>" + data.city + "</b>");
+    sentence = sentence.replace(data.city, "<b>" + data.city + "</b>"); // bold the city name in the text
     if (textArray.indexOf(data.text) > -1){ //check if the text has been assigned an anchor id, if it has use that one
         var string = '<a href="#a' + textArray.indexOf(data.text) + '">' + sentence +  "</a>";
     }else { // else use the new id number
@@ -300,7 +298,7 @@ function addExisting(data, allcitydataindex){
     
     content = content + "<p>" + string +  "</p>";
     
-    markerArray[index].info.setContent(content);
+    markerArray[index].info.setContent(content); // update the info window
     
     
     var indarray = [];
@@ -708,6 +706,7 @@ jQuery(function($) {
                 }
             }
         });
+        //used to centre the map on a marker as you scroll, takes the last marker if multiple sentences are visible
         var anchorid = scrollindexes[scrollindexes.length-1];
         centerOnMarker(document.getElementById(anchorid));
         scrollindexes.length = 0;
