@@ -23,7 +23,8 @@ var directionsService;
 var scrollfilterflag = false;   //flag for handling text scroll filtering
 var pressTimer;
 var totaldistance = 0;
-var rainbow = new Rainbow();
+var rainbow = new Rainbow(); // used for the different colours of the lines.
+var cityCounter = {}; //counts the number of times a city is referenced
 
 function initialise() {
     
@@ -154,6 +155,7 @@ function moreAddresses() {
 for (var i in allcitydata) {
     if (allcitydata[i].city in cityToMarkersArray){ // if the city has already had a marker made, update it with the new information
         addExisting(allcitydata[i],i);
+        cityCounter[allcitydata[i].city] = cityCounter[allcitydata[i].city] + 1;
     }
     else{
         if (allcitydata[i].geocode === false){ //could not find any geocode information for the location
@@ -162,6 +164,7 @@ for (var i in allcitydata) {
         else{ // create a new marker for the city
             var position =  new google.maps.LatLng(allcitydata[i].latitude, allcitydata[i].longitude);   
             addMarker(allcitydata[i],position,i);
+            cityCounter[allcitydata[i].city] = 1;
         }
 
     }
@@ -170,7 +173,7 @@ for (var i in allcitydata) {
     createLines(); //create the lines connecting the places 
     
 
-    console.table(allcitydata);
+    console.table(cityCounter);
 }
     
 
