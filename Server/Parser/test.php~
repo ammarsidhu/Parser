@@ -1,0 +1,6 @@
+<?php 
+$var_value =  'upload/testfile.txt';
+echo $var_value; 
+echo "\n now test \n";
+echo "java -jar file.jar " + .$var_value;
+?>

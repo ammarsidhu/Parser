@@ -81,7 +81,7 @@ function searchformissingcoords(){
     // uses a stack as a counter, continue when stack is empty
     $.when.apply($, deferstack).done(function() {
                 moreAddresses();
-                //updategeonamesarray();
+                //updategeonamesarray(); //decide if you want to update the geonames database
     });
 }
 
